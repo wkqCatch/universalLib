@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/MenuBarRc">
+        <file alias="LanguageSetting">Resources/setting/setting18.png</file>
+        <file alias="SkinSetting">Resources/skin/skin1.png</file>
+        <file alias="Minimize">Resources/minimize/minimize6.png</file>
+        <file alias="Close">Resources/close/close12.png</file>
+        <file alias="maximize">Resources/maximize/maxmize5.png</file>
+        <file alias="restore">Resources/maximize/maxmize6.png</file>
+    </qresource>
+    <qresource prefix="/MessageBoxRc">
+        <file alias="questionIcon">Resources/GeneralDlg/question.png</file>
+        <file alias="informationIcon">Resources/GeneralDlg/information.png</file>
+        <file alias="errorIcon">Resources/GeneralDlg/error.png</file>
+        <file alias="warningIcon">Resources/GeneralDlg/warning.png</file>
+        <file alias="successIcon">Resources/GeneralDlg/success.png</file>
+        <file alias="DlgIcon">Resources/robot/robot7.png</file>
+    </qresource>
+</RCC>

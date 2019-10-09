@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/client">
+        <file alias="AppIcon">Resources/robot/robot7.png</file>
+    </qresource>
+</RCC>

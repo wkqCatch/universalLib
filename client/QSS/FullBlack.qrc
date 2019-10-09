@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/FullBlack">
+        <file>FullBlack.qss</file>
+        <file alias="branch_closed">FullBlackPic/branch_closed.png</file>
+        <file alias="branch_closed-on">FullBlackPic/branch_closed-on.png</file>
+        <file alias="branch_open">FullBlackPic/branch_open.png</file>
+        <file alias="branch_open-on">FullBlackPic/branch_open-on.png</file>
+        <file alias="checkbox_checked">FullBlackPic/checkbox_checked.png</file>
+        <file alias="checkbox_checked_disabled">FullBlackPic/checkbox_checked_disabled.png</file>
+        <file alias="checkbox_checked_focus">FullBlackPic/checkbox_checked_focus.png</file>
+        <file alias="checkbox_indeterminate">FullBlackPic/checkbox_indeterminate.png</file>
+        <file alias="checkbox_indeterminate_disabled">FullBlackPic/checkbox_indeterminate_disabled.png</file>
+        <file alias="checkbox_indeterminate_focus">FullBlackPic/checkbox_indeterminate_focus.png</file>
+        <file alias="checkbox_unchecked">FullBlackPic/checkbox_unchecked.png</file>
+        <file alias="checkbox_unchecked_disabled">FullBlackPic/checkbox_unchecked_disabled.png</file>
+        <file alias="checkbox_unchecked_focus">FullBlackPic/checkbox_unchecked_focus.png</file>
+        <file alias="close">FullBlackPic/close.png</file>
+        <file alias="close-hover">FullBlackPic/close-hover.png</file>
+        <file alias="close-pressed">FullBlackPic/close-pressed.png</file>
+        <file alias="down_arrow">FullBlackPic/down_arrow.png</file>
+        <file alias="down_arrow_disabled">FullBlackPic/down_arrow_disabled.png</file>
+        <file alias="Hmovetoolbar">FullBlackPic/Hmovetoolbar.png</file>
+        <file alias="Hsepartoolbar">FullBlackPic/Hsepartoolbar.png</file>
+        <file alias="left_arrow">FullBlackPic/left_arrow.png</file>
+        <file alias="left_arrow_disabled">FullBlackPic/left_arrow_disabled.png</file>
+        <file alias="radio_checked">FullBlackPic/radio_checked.png</file>
+        <file alias="radio_checked_disabled.png">FullBlackPic/radio_checked_disabled.png</file>
+        <file alias="radio_checked_focus">FullBlackPic/radio_checked_focus.png</file>
+        <file alias="radio_unchecked">FullBlackPic/radio_unchecked.png</file>
+        <file alias="radio_unchecked_disabled">FullBlackPic/radio_unchecked_disabled.png</file>
+        <file alias="radio_unchecked_focus">FullBlackPic/radio_unchecked_focus.png</file>
+        <file alias="right_arrow">FullBlackPic/right_arrow.png</file>
+        <file alias="right_arrow_disabled">FullBlackPic/right_arrow_disabled.png</file>
+        <file alias="sizegrip">FullBlackPic/sizegrip.png</file>
+        <file alias="stylesheet-branch-end">FullBlackPic/stylesheet-branch-end.png</file>
+        <file alias="stylesheet-branch-more">FullBlackPic/stylesheet-branch-more.png</file>
+        <file alias="stylesheet-vline">FullBlackPic/stylesheet-vline.png</file>
+        <file alias="transparent">FullBlackPic/transparent.png</file>
+        <file alias="undock">FullBlackPic/undock.png</file>
+        <file alias="up_arrow">FullBlackPic/up_arrow.png</file>
+        <file alias="up_arrow_disabled">FullBlackPic/up_arrow_disabled.png</file>
+        <file alias="Vmovetoolbar">FullBlackPic/Vmovetoolbar.png</file>
+        <file alias="Vsepartoolbar">FullBlackPic/Vsepartoolbar.png</file>
+    </qresource>
+</RCC>
