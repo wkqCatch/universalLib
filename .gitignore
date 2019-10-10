@@ -90,6 +90,7 @@ compile_commands.json
 *.user
 *.userosscache
 *.sln.docstates
+*.cd
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

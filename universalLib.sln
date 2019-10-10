@@ -7,15 +7,26 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "client\client.vcx
 	ProjectSection(ProjectDependencies) = postProject
 		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
 		{AE8CEC37-D111-40FA-B085-298C80AC4B39} = {AE8CEC37-D111-40FA-B085-298C80AC4B39}
+		{DB283387-6DA1-484A-B4A3-A65E5EAD8D1D} = {DB283387-6DA1-484A-B4A3-A65E5EAD8D1D}
+		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E} = {41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QUniversalFrameLib", "QUniversalFrameLib\QUniversalFrameLib.vcxproj", "{DC2AC134-6A8D-4F4F-A983-0F37954EF87B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMotionControlLib", "QMotionControlLib\QMotionControlLib.vcxproj", "{AE8CEC37-D111-40FA-B085-298C80AC4B39}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QSerialPortLib", "QSerialPortLib\QSerialPortLib.vcxproj", "{DB283387-6DA1-484A-B4A3-A65E5EAD8D1D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCameraLib", "QCameraLib\QCameraLib.vcxproj", "{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
