@@ -49,8 +49,5 @@ int main(int argc, char *argv[])
 	QDialogTest dialogTest;
 	dialogTest.show();
 
-	int a = 0; 
-	int b = 0;
-
 	return a.exec();
 }
