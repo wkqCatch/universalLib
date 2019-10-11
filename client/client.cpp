@@ -14,16 +14,13 @@ client::client(QWidget *parent)
 
 	int menuBarHeight = menuBar()->height();
 
-	pcustomMenuBar = new QCustomMainWindowMenuBar(this, 25);
+	pcustomMenuBar = new QCustomMainWindowMenuBar(this, 23);
+	pcustomMenuBar->enableMaximize(false);
 	pcustomMenuBar->setAppIcon(":/client/AppIcon");
 	pcustomMenuBar->setAppTitle(QStringLiteral("¿Õµµ°¸aaaaaaa"));
 }
 
 client::~client()
 {
-	if (pcustomMenuBar != nullptr)
-	{
-		delete pcustomMenuBar;
-		pcustomMenuBar = nullptr;
-	}
+
 }

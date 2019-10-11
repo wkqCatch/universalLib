@@ -11,8 +11,9 @@ QCustomMessageBox::QCustomMessageBox(QWidget *parent, QString strBoxContentIcon,
 
 	m_pFrameDisplay->setAttribute(Qt::WA_TranslucentBackground, true);
 
-	m_pCustomDlgTitleBar = new QCustomDialogTitleBar(this, m_pFrameMessageBoxTitleBar, 20, false, QCustomDialogTitleBar::Left);
+	m_pCustomDlgTitleBar = new QCustomDialogTitleBar(this, m_pFrameMessageBoxTitleBar, 20);
 	m_pCustomDlgTitleBar->setTitleIcon(":/MessageBoxRc/DlgIcon");
+	m_pCustomDlgTitleBar->hideMaximize(true);
 
 	m_plbContentIcon->setPixmap(QPixmap(strBoxContentIcon).scaled(36, 36));
 	QFont contentTextFont = m_plbContentText->font();

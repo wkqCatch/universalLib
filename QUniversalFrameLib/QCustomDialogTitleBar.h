@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPoint>
 #include "quniversalframelib_global.h"
 
 class QDialog;
@@ -14,18 +15,21 @@ class QUNIVERSALFRAMELIB_EXPORT QCustomDialogTitleBar : public QObject
 public:
 	enum TitleAlign { Left, Center };
 
-	QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar, int nHeight, bool bShowMaximize, TitleAlign titleAlign = Left);
+	QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar, int nHeight, TitleAlign titleAlign = Left);
 	~QCustomDialogTitleBar();
 
 	void setTitleName(QString strName);
 	void setTitleIcon(QString strName);
-	void enableMaximize(bool bMaximize);
+	void hideMaximize(bool bMaximize);
 
 	public slots:
 	void slotShowMaximizeOrNormal();
 
+	virtual bool eventFilter(QObject *watched, QEvent *event) override;
+
 private:
 	QDialog *m_pdlgCustomDlg;        //对话框指针
+	QFrame *m_pTitleBar;             //标题栏指针
 
 	QLabel *m_plbTitleIcon;          //标题栏的图标
 	QLabel *m_plbTitleName;          //对话框的名称
@@ -35,4 +39,7 @@ private:
 
 	int m_nTitleBarHeight;           //标题栏高
 	bool m_bMaximizeFlag;            //是否最大化标志位
+
+	bool m_bMovingMode;              //是否处于移动窗口模式
+	QPoint m_ptCursorPreview;        //窗口移动前指针
 };

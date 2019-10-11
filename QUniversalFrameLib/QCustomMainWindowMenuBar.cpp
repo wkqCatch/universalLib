@@ -7,9 +7,12 @@
 #include <QHboxLayout>
 #include <QToolButton>
 #include <QToolBar>
+#include <QEvent>
+#include <QCursor>
+#include <QMouseEvent>
 
 QCustomMainWindowMenuBar::QCustomMainWindowMenuBar(QMainWindow *pMainWindow, int nMenuBarHeight)
-	: QObject()
+	: QObject(pMainWindow)
 	, m_plbAppIcon(nullptr)
 	, m_plbAppTitle(nullptr)
 	, m_ptbLanguageSetting(nullptr)
@@ -22,21 +25,27 @@ QCustomMainWindowMenuBar::QCustomMainWindowMenuBar(QMainWindow *pMainWindow, int
 	, m_ptbMaximize(nullptr)
 	, m_bMaximizeFlag(false)
 	, m_pMainWindow(pMainWindow)
+	, m_pMenubar(nullptr)
+	, m_bMovingMode(false)
+	, m_ptCursorPreview()
 {
-	if(pMainWindow == nullptr)
+	if (pMainWindow == nullptr)
 	{
 		return;
 	}
 
-	//以下是创建程序的图标和名称的代码KO
+	//以下是创建程序的图标和名称的代码
 	pMainWindow->setWindowFlag(Qt::FramelessWindowHint, true);
 	pMainWindow->setWindowState(Qt::WindowMaximized);
 	m_bMaximizeFlag = true;
+	pMainWindow->installEventFilter(this);
 
-	QMenuBar *pMenuBar = pMainWindow->menuBar(); 
-	QFont menuBarFont = pMenuBar->font();
-	menuBarFont.setPixelSize(m_nMenubarHeight);
-	pMenuBar->setFont(menuBarFont);
+ 	QMenuBar *pMenuBar = pMainWindow->menuBar();
+	m_pMenubar = pMenuBar;
+ 	QFont menuBarFont = pMenuBar->font();
+ 	menuBarFont.setPixelSize(m_nMenubarHeight);
+ 	pMenuBar->setFont(menuBarFont);
+	pMenuBar->installEventFilter(this);
 
 	QFrame *pIconAndTitleFrame = new QFrame();
 	pIconAndTitleFrame->setAttribute(Qt::WA_TranslucentBackground, true);
@@ -116,7 +125,7 @@ QCustomMainWindowMenuBar::QCustomMainWindowMenuBar(QMainWindow *pMainWindow, int
 	pToolButtonLayout->addWidget(m_ptbMinimize);
 	pToolButtonLayout->addWidget(m_ptbMaximize);
 	pToolButtonLayout->addWidget(m_ptbClose);
-	
+
 	pMenuBar->setCornerWidget(pToolButtonFrame, Qt::TopRightCorner);
 
 	connect(m_ptbMinimize, &QToolButton::clicked, pMainWindow, &QMainWindow::showMinimized);
@@ -126,12 +135,11 @@ QCustomMainWindowMenuBar::QCustomMainWindowMenuBar(QMainWindow *pMainWindow, int
 
 QCustomMainWindowMenuBar::~QCustomMainWindowMenuBar()
 {
-
 }
 
 void QCustomMainWindowMenuBar::setAppIcon(QString strAppIcon)
 {
-	if(m_plbAppIcon == nullptr)
+	if (m_plbAppIcon == nullptr)
 	{
 		return;
 	}
@@ -156,6 +164,77 @@ void QCustomMainWindowMenuBar::setAppTitle(QString strAppTitle)
 void QCustomMainWindowMenuBar::enableMaximize(bool bMaximize)
 {
 	m_ptbMaximize->setEnabled(bMaximize);
+	if (bMaximize)
+	{
+		m_ptbMaximize->setIcon(QIcon(":/MenuBarRc/restore"));
+	}
+	else
+	{
+		m_ptbMaximize->setIcon(QIcon(":/MenuBarRc/restore_disable"));
+	}
+}
+
+void QCustomMainWindowMenuBar::enableMinimize(bool bMinimize)
+{
+	m_ptbMinimize->setEnabled(bMinimize);
+}
+
+bool QCustomMainWindowMenuBar::eventFilter(QObject * watched, QEvent * event)
+{
+	if (m_bMaximizeFlag)
+	{
+		return QObject::eventFilter(watched, event);
+	}
+
+	if (watched == m_pMenubar)
+	{
+		if (event->type() == QEvent::MouseButtonPress)
+		{
+			QPoint pt = dynamic_cast<QMouseEvent*>(event)->pos();
+
+			m_ptCursorPreview = dynamic_cast<QMouseEvent*>(event)->globalPos();
+
+			if (m_pMenubar->actionAt(pt) == nullptr)
+			{
+				m_bMovingMode = true;
+				m_pMenubar->setCursor(Qt::ClosedHandCursor);
+
+				return true;
+			}
+		}
+		else if (event->type() == QEvent::MouseButtonRelease)
+		{
+			QPoint pt = dynamic_cast<QMouseEvent*>(event)->pos();
+			if (m_pMenubar->actionAt(pt) == nullptr)
+			{
+				m_bMovingMode = false;
+				m_pMenubar->setCursor(Qt::ArrowCursor);
+
+				return true;
+			}
+		}
+		else if (event->type() == QEvent::MouseMove)
+		{
+			if (m_bMovingMode)
+			{
+				QPoint cursorPt = dynamic_cast<QMouseEvent*>(event)->globalPos();
+				QPoint windowPt = m_pMainWindow->pos();
+
+				int nDeltaX = cursorPt.x() - m_ptCursorPreview.x();
+				int nDeltaY = cursorPt.y() - m_ptCursorPreview.y();
+				m_ptCursorPreview = cursorPt;
+
+				windowPt.setX(windowPt.x() + nDeltaX);
+				windowPt.setY(windowPt.y() + nDeltaY);
+				
+				m_pMainWindow->move(windowPt);
+
+				return true;
+			}
+		}
+	}
+
+	return QObject::eventFilter(watched, event);
 }
 
 void QCustomMainWindowMenuBar::slotShowNormalOrMaximize()

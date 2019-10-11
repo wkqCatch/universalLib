@@ -28,26 +28,11 @@ int main(int argc, char *argv[])
 		qssFile.close();
 	}
 
-	qDebug() << "hello world" << endl;
-	QElapsedTimer tim;
-	tim.start();
-	while (tim.elapsed() < 3000)
-	{
-	}
+// 	client myClient;
+// 	myClient.show();
 
-	CommunicationSettings settings = { "COM5", QSerialPort::NoParity, QSerialPort::Baud9600, QSerialPort::Data8,
-									QSerialPort::OneStop, 520, "192", 1000, 3 };
-
-	QCustomModbusClient modbusClient(settings);
-	bool bResult = modbusClient.connectModbusClient();
-	if (!bResult)
-	{
-	}
-
-	qDebug() << "nihao,zhongguo" << endl;
-
-	QDialogTest dialogTest;
-	dialogTest.show();
+	QDialogTest dlgTest;
+	dlgTest.show();
 
 	return a.exec();
 }

@@ -4,9 +4,12 @@
 #include <QToolButton>
 #include <QDialog>
 #include <QHBoxLayout>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QCursor>
 
-QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar, int nHeight, bool bShowMaximize, TitleAlign titleAlign)
-	: QObject()
+QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar, int nHeight, TitleAlign titleAlign)
+	: QObject(pParent)
 	, m_plbTitleName(nullptr)
 	, m_plbTitleIcon(nullptr)
 	, m_ptbMinimize(nullptr)
@@ -15,6 +18,9 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 	, m_nTitleBarHeight(nHeight)
 	, m_bMaximizeFlag(false)
 	, m_pdlgCustomDlg(pParent)
+	, m_pTitleBar(pTitleBar)
+	, m_bMovingMode(false)
+	, m_ptCursorPreview()
 {
 	if (pTitleBar == nullptr || pParent == nullptr)
 	{
@@ -22,6 +28,7 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 	}
 
 	pTitleBar->setAttribute(Qt::WA_TranslucentBackground, true);
+	pTitleBar->installEventFilter(this);
 
 	QString dlgObjectName = pParent->objectName();
 	QString dlgStyleSheet = dlgObjectName + "{border:2px solid rgb(96,96,96); border-radius:6px;}";
@@ -90,10 +97,6 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 	pTitleBarLayout->addStretch();
 	pTitleBarLayout->addWidget(m_ptbMinimize);
 	pTitleBarLayout->addWidget(m_ptbMaximize);
-	if (!bShowMaximize)
-	{
-		m_ptbMaximize->hide();
-	}
 	pTitleBarLayout->addWidget(m_ptbClose);
 
 	connect(m_ptbMinimize, &QToolButton::clicked, m_pdlgCustomDlg, &QDialog::showMinimized);
@@ -103,6 +106,7 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 
 QCustomDialogTitleBar::~QCustomDialogTitleBar()
 {
+
 }
 
 void QCustomDialogTitleBar::setTitleName(QString strName)
@@ -121,9 +125,65 @@ void QCustomDialogTitleBar::setTitleIcon(QString strName)
 	}
 }
 
-void QCustomDialogTitleBar::enableMaximize(bool bMaximize)
+void QCustomDialogTitleBar::hideMaximize(bool bMaximize)
 {
-	m_ptbMaximize->setEnabled(bMaximize);
+	if(bMaximize)
+	{
+		m_ptbMaximize->hide();
+	}
+}
+
+bool QCustomDialogTitleBar::eventFilter(QObject * watched, QEvent * event)
+{
+	if(m_bMaximizeFlag)
+	{
+		return QObject::eventFilter(watched, event);
+	}
+
+	if(watched == m_pTitleBar)
+	{
+		if (event->type() == QEvent::MouseButtonPress)
+		{
+			QPoint pt = dynamic_cast<QMouseEvent*>(event)->pos();
+
+			m_ptCursorPreview = dynamic_cast<QMouseEvent*>(event)->globalPos();
+
+			m_bMovingMode = true;
+			m_pTitleBar->setCursor(Qt::ClosedHandCursor);
+
+			return true;
+		}
+		else if (event->type() == QEvent::MouseButtonRelease)
+		{
+			QPoint pt = dynamic_cast<QMouseEvent*>(event)->pos();
+
+			m_bMovingMode = false;
+			m_pTitleBar->setCursor(Qt::ArrowCursor);
+
+			return true;
+		}
+		else if (event->type() == QEvent::MouseMove)
+		{
+			if (m_bMovingMode)
+			{
+				QPoint cursorPt = dynamic_cast<QMouseEvent*>(event)->globalPos();
+				QPoint windowPt = m_pdlgCustomDlg->pos();
+
+				int nDeltaX = cursorPt.x() - m_ptCursorPreview.x();
+				int nDeltaY = cursorPt.y() - m_ptCursorPreview.y();
+				m_ptCursorPreview = cursorPt;
+
+				windowPt.setX(windowPt.x() + nDeltaX);
+				windowPt.setY(windowPt.y() + nDeltaY);
+
+				m_pdlgCustomDlg->move(windowPt);
+
+				return true;
+			}
+		}
+	}
+
+	return QObject::eventFilter(watched, event);
 }
 
 void QCustomDialogTitleBar::slotShowMaximizeOrNormal()

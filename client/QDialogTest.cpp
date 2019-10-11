@@ -10,17 +10,15 @@ QDialogTest::QDialogTest(QWidget *parent)
 {
 	setupUi(this);
 
-	pCustomTitleBar = new QCustomDialogTitleBar(this, m_pFrameTitleBar, 20, false);
-	pCustomTitleBar->enableMaximize(false);
+	pCustomTitleBar = new QCustomDialogTitleBar(this, m_pFrameTitleBar, 20);
+	pCustomTitleBar->hideMaximize(false);
 	pCustomTitleBar->setTitleName("hello");
 	pCustomTitleBar->setTitleIcon(":/client/AppIcon");
+
+	setSizeGripEnabled(true);
 }
 
 QDialogTest::~QDialogTest()
 {
-	if (pCustomTitleBar != nullptr)
-	{
-		delete pCustomTitleBar;
-		pCustomTitleBar = nullptr;
-	}
+	
 }
