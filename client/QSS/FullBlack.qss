@@ -155,7 +155,6 @@ QRadioButton::indicator:unchecked
     image: url(:/FullBlack/radio_unchecked);
 }
 
-
 QRadioButton::indicator:unchecked:hover,
 QRadioButton::indicator:unchecked:focus,
 QRadioButton::indicator:unchecked:pressed
@@ -368,6 +367,11 @@ QLineEdit:focus
 	border: 1px solid #76797C;
 }
 
+QLineEdit:disabled
+{
+	border-color: #454545;
+}
+
 QGroupBox 
 {
     border:1px solid #76797C; 
@@ -449,7 +453,6 @@ QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal
 {
     background: none;
 }
-
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal
 {
@@ -607,7 +610,7 @@ QPushButton
     border-color: #76797C;
     border-style: solid;
     padding: 5px;
-    border-radius: 2px;
+    border-radius: 3px;
     outline: none;
 }
 
@@ -619,9 +622,9 @@ QPushButton:disabled
     border-style: solid;
     padding-top: 5px;
     padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 3px;
     color: #454545;
 }
 
@@ -641,8 +644,8 @@ QPushButton:hover
 QPushButton:pressed
 {
     background-color: #3daee9;
-    padding-top: -15px;
-    padding-bottom: -17px
+    /*padding-top: -15px;
+    padding-bottom: -17px*/
 }
 
 QPushButton:checked
@@ -651,13 +654,18 @@ QPushButton:checked
     border-color:#6A6969; 
 }
 
+QPushButton:checked:hover
+{
+	border: 1px solid #3daee9;
+}
+
 QComboBox
 {
     selection-background-color: #3daee9;
     border: 1px solid #76797C;
-    border-radius: 2px;
-    padding: 3px;
-/*    min-width: 65px;*/
+    border-radius: 3px;
+    padding: 2px;
+    /*min-width: 95px;*/
 	font-family: Rockwell;
 }
 
@@ -674,24 +682,29 @@ QComboBox:hover,QAbstractSpinBox:hover,QLineEdit:hover,QTextEdit:hover,QPlainTex
 
 QComboBox:on
 {
-    padding-top: 3px;
+   /* padding-top: 3px;*/
     padding-left: 4px;
     selection-background-color: #4a4a4a;
 }
 
 QComboBox QAbstractItemView
 {
-    background-color: #232629;
-    border-radius: 2px;
+    background-color: #232629;             /* #232629 是一种偏黑色的 */
+    border-radius:2px;
     border: 1px solid #76797C;
-    selection-background-color: #3daee9;
+    selection-background-color:#3daee9;   /* #3daee9 是蓝色的 */
+}
+
+QComboBox QAbstractItemView::item
+{
+	min-height:18px;
 }
 
 QComboBox::drop-down
 {
     subcontrol-origin: padding;
     subcontrol-position: top right;
-    width: 15px;
+    width: 16px;
 
     border-left-width: 0px;
     border-left-color: darkgray;
@@ -712,26 +725,26 @@ QComboBox::down-arrow:focus
 }
 
 QAbstractSpinBox {
-    padding: 5px;
+    padding: 3px;
     border: 1px solid #76797C;
     background-color: #232629;
     color: #eff0f1;
-    border-radius: 2px;
-    min-width: 75px;
+    border-radius: 3px;
+    /*min-width: 75px;*/
 }
 
-QAbstractSpinBox:up-button
+QAbstractSpinBox::up-button
 {
     background-color: transparent;
     subcontrol-origin: border;
-    subcontrol-position: center right;
+    subcontrol-position: top right;
 }
 
-QAbstractSpinBox:down-button
+QAbstractSpinBox::down-button
 {
     background-color: transparent;
     subcontrol-origin: border;
-    subcontrol-position: center left;
+    subcontrol-position: bottom right;
 }
 
 QAbstractSpinBox::up-arrow,QAbstractSpinBox::up-arrow:disabled,QAbstractSpinBox::up-arrow:off {
@@ -739,11 +752,11 @@ QAbstractSpinBox::up-arrow,QAbstractSpinBox::up-arrow:disabled,QAbstractSpinBox:
     width: 10px;
     height: 10px;
 }
+
 QAbstractSpinBox::up-arrow:hover
 {
     image: url(:/FullBlack/up_arrow);
 }
-
 
 QAbstractSpinBox::down-arrow,QAbstractSpinBox::down-arrow:disabled,QAbstractSpinBox::down-arrow:off
 {
@@ -751,6 +764,7 @@ QAbstractSpinBox::down-arrow,QAbstractSpinBox::down-arrow:disabled,QAbstractSpin
     width: 10px;
     height: 10px;
 }
+
 QAbstractSpinBox::down-arrow:hover
 {
     image: url(:/FullBlack/down_arrow);

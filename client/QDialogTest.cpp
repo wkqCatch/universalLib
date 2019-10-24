@@ -1,8 +1,7 @@
 #include "QDialogTest.h"
 
-#include "../QUniversalFrameLib/QCustomDialogTitleBar.h"
-#include "../QUniversalFrameLib/QCustomMessageBox.h"
-#pragma comment(lib, "../X64/Debug/QUniversalFrameLib.lib")
+#include <QCustomDialogTitleBar.h>
+#include <QCustomMessageBox.h>
 
 QDialogTest::QDialogTest(QWidget *parent)
 	: QDialog(parent)
@@ -20,5 +19,4 @@ QDialogTest::QDialogTest(QWidget *parent)
 
 QDialogTest::~QDialogTest()
 {
-	
 }

@@ -1,10 +1,6 @@
 #include "client.h"
 
-#include "../QUniversalFrameLib/QCustomMainWindowMenuBar.h"
-#pragma comment(lib, "../X64/Debug/QUniversalFrameLib.lib")
-
-#include "../QMotionControlLib/QIMCMotionControl.h"
-#pragma comment(lib, "../X64/Debug/QMotionControlLib.lib")
+#include "QCustomMainWindowMenuBar.h"
 
 client::client(QWidget *parent)
 	: QMainWindow(parent)
@@ -22,5 +18,4 @@ client::client(QWidget *parent)
 
 client::~client()
 {
-
 }

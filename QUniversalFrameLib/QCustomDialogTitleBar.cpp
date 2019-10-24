@@ -66,7 +66,7 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 	m_ptbClose->setIcon(QIcon(":/MenuBarRc/Close"));
 
 	QHBoxLayout *pTitleBarLayout = new QHBoxLayout(pTitleBar);
-	pTitleBarLayout->setContentsMargins(3, 0, 0, 0);
+	pTitleBarLayout->setContentsMargins(2, 0, 0, 0);
 	pTitleBarLayout->setSpacing(2);
 
 	switch (titleAlign)
@@ -74,7 +74,7 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 	case QCustomDialogTitleBar::Left:
 		if (m_plbTitleIcon != nullptr)
 			pTitleBarLayout->addWidget(m_plbTitleIcon);
-		pTitleBarLayout->addSpacing(6);
+		pTitleBarLayout->addSpacing(3);
 		if (m_plbTitleName != nullptr)
 			pTitleBarLayout->addWidget(m_plbTitleName);
 		pTitleBarLayout->addStretch();
@@ -106,7 +106,6 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 
 QCustomDialogTitleBar::~QCustomDialogTitleBar()
 {
-
 }
 
 void QCustomDialogTitleBar::setTitleName(QString strName)
@@ -127,7 +126,7 @@ void QCustomDialogTitleBar::setTitleIcon(QString strName)
 
 void QCustomDialogTitleBar::hideMaximize(bool bMaximize)
 {
-	if(bMaximize)
+	if (bMaximize)
 	{
 		m_ptbMaximize->hide();
 	}
@@ -135,12 +134,12 @@ void QCustomDialogTitleBar::hideMaximize(bool bMaximize)
 
 bool QCustomDialogTitleBar::eventFilter(QObject * watched, QEvent * event)
 {
-	if(m_bMaximizeFlag)
+	if (m_bMaximizeFlag)
 	{
 		return QObject::eventFilter(watched, event);
 	}
 
-	if(watched == m_pTitleBar)
+	if (watched == m_pTitleBar)
 	{
 		if (event->type() == QEvent::MouseButtonPress)
 		{

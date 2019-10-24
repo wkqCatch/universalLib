@@ -7,6 +7,6 @@ class QCustomModbusServer : public QObject
 	Q_OBJECT
 
 public:
-	QCustomModbusServer(QObject *parent);
+	QCustomModbusServer(QObject *parent = nullptr);
 	~QCustomModbusServer();
 };

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/DialogIcon">
+        <file alias="SerialPortIcon">Resources/SerialPortIcon.png</file>
+        <file alias="SerialIcon">Resources/SerialIcon.png</file>
+    </qresource>
+</RCC>

@@ -80,7 +80,7 @@ void QCustomMessageBox::translateUI()
 	if(ppbYesButton != nullptr)
 	{
 		ppbYesButton->setText(QStringLiteral("确 认"));
-		ppbYesButton->setFixedWidth(69);
+		//ppbYesButton->setFixedWidth(69);
 		ppbYesButton->setAutoDefault(true);
 		ppbYesButton->setDefault(true);
 	}
@@ -89,7 +89,7 @@ void QCustomMessageBox::translateUI()
 	if(ppbCancelButton != nullptr)
 	{
 		ppbCancelButton->setText(QStringLiteral("取 消"));
-		ppbCancelButton->setFixedWidth(69);
+		//ppbCancelButton->setFixedWidth(69);
 		ppbCancelButton->setAutoDefault(true);
 		ppbCancelButton->setDefault(false);
 	}
