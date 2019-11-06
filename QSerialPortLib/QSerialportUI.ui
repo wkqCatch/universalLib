@@ -120,6 +120,74 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="m_plbSerialProtocol">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>通讯协议：</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>m_pcomboSerialProtocol</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="m_pcomboSerialProtocol">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <property name="maxVisibleItems">
+        <number>12</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>无协议</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Modbus RTU主</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Modbus RTU从</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QLabel" name="m_plbStationNumber">
        <property name="font">
         <font>
@@ -148,120 +216,6 @@
        <property name="minimum">
         <number>1</number>
        </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="m_plbSerialProtocol">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>通讯协议：</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>m_pcomboSerialProtocol</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="m_pcomboSerialProtocol">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="editable">
-        <bool>false</bool>
-       </property>
-       <property name="maxVisibleItems">
-        <number>12</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>无协议</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Modbus RTU</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="m_plbMasterOrSlave">
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>主从选择：</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>m_pcomboMasterOrSlave</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="m_pcomboMasterOrSlave">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>56</width>
-         <height>0</height>
-        </size>
-       </property>
-       <item>
-        <property name="text">
-         <string>主站</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>从站</string>
-        </property>
-       </item>
       </widget>
      </item>
     </layout>
@@ -327,6 +281,9 @@
         </item>
         <item>
          <widget class="QComboBox" name="m_pcomboBaudRate">
+          <property name="currentText">
+           <string>1200</string>
+          </property>
           <item>
            <property name="text">
             <string>1200</string>
@@ -514,12 +471,12 @@
           </item>
           <item>
            <property name="text">
-            <string>奇校验</string>
+            <string>偶校验</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>偶校验</string>
+            <string>奇校验</string>
            </property>
           </item>
          </widget>
@@ -563,6 +520,9 @@
           <property name="maximum">
            <number>9999</number>
           </property>
+          <property name="value">
+           <number>1000</number>
+          </property>
          </widget>
         </item>
         <item>
@@ -597,7 +557,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="m_psbRetryTimes"/>
+         <widget class="QSpinBox" name="m_psbRetryTimes">
+          <property name="value">
+           <number>3</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -997,6 +961,19 @@
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <spacer name="horizontalSpacer_16">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item>
              <widget class="QRadioButton" name="radioButton">
               <property name="text">

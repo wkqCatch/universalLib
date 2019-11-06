@@ -5,25 +5,28 @@
 #include "qserialportlib_global.h"
 #include "commonDefines.h"
 
-#include "QCustomModbusClient.h"
-#include "QCustomModbusServer.h"
-
 class QCustomDialogTitleBar;
 class QModbusReply;
+class QCustomModbusClient;
+class QCustomModbusServer;
+class QCustomSerialPort;
 class QSERIALPORTLIB_EXPORT QSerialportUI : public QDialog, public Ui::QSerialportUI
 {
 	Q_OBJECT
 
 public:
-	enum CommunicationMode{unConnect, FreeProtocol, ModbusClient, ModbusServer};    //通讯模式
-
-	QSerialportUI(QWidget *parent, const CommunicationSettings &settings);
+	QSerialportUI(QWidget *parent);
 	~QSerialportUI();
 
-	void updateControl();							 //更新控件
-	void updateParam();								 //更新参数
+	void updateControl(const CommunicationSettings &settings);							 //更新控件
+	bool updateParam();								 //更新参数
 	void enableParamControl(bool bState);			 //禁止参数的控件
 	void enableModeControl(CommunicationMode mode);  //使能对应模式的控件
+
+	void attachModbusClient(QCustomModbusClient *pModbusClient);  
+	void attachModbusServer(QCustomModbusServer *pModbusServer);
+	void attachFreeSerialPort(QCustomSerialPort *pSerialPort);
+	void detachSerialPort();
 
 public slots:
 	void slot_btConnect_Clicked(bool);                     //连接
@@ -33,9 +36,9 @@ public slots:
 private:
 	QCustomModbusClient   *m_pCustomModbuClient;       //modbus主站
 	QCustomModbusServer   *m_pCustomModbusServer;      //modbus从站
+	QCustomSerialPort     *m_pSerialPort;              //自定义串口
 
 	QCustomDialogTitleBar *m_pCustomTitleBar;          //自定义标题栏的类
-	CommunicationSettings  m_paramSetting;             //各个参数的设置
 
 	CommunicationMode      m_communicateMode;         //通讯模式
 };

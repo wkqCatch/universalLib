@@ -10,6 +10,12 @@
 #include <QElapsedTimer>
 
 #include "QSerialportUI.h"
+#include "QCustomModbusClient.h"
+
+#include <QTableWidget>
+
+#include <QListView>
+#include <QStringListModel>
 
 int main(int argc, char *argv[])
 {
@@ -26,18 +32,52 @@ int main(int argc, char *argv[])
 	
 	CommunicationSettings settings;
 	settings.strSerialPortName = "COM6";
-	settings.nBaudRate = 9600;
+	settings.nBaudRate = 19200;
 	settings.nDataBits = 8;
 	settings.nStopBits = 1;
-	settings.strParity = QStringLiteral("无校验");
+	settings.nParity = 0;
 	settings.nReplyOverTime = 1000;
 	settings.nRetryTimes = 3;
 	settings.ucStationNum = 1;
-	settings.strCommunicationProtocol = QStringLiteral("Modbus RTU");
-	settings.strMasterOrSlave = QStringLiteral("主站");
+	settings.nCommunicationMode = 0;
 
-	QSerialportUI serialPortUI(nullptr, settings);
-	serialPortUI.show();
+// 	QStringList list;
+// 	list << "a" << "b" << "c" << "d";
+// 	QStringListModel listModel(list);
+// 	QListView listView;
+// 	listView.setModel(&listModel);
+// 	listView.show();
+
+// 	QSerialportUI serialPortUI(nullptr);
+// 	serialPortUI.show();
+
+	QTableWidget table(6, 6);
+	QTableWidgetItem *item0 = new QTableWidgetItem("hello china");
+
+	//table.setAlternatingRowColors(true);
+
+	table.setItem(0, 0, item0);
+	table.setSelectionMode(QAbstractItemView::ExtendedSelection);
+	table.setSelectionBehavior(QAbstractItemView::SelectRows);
+
+	table.show();
+
+	QTableWidgetItem *pTim = table.item(0, 0);
+
+
+
+
+// 	table.horizontalHeader()->setDefaultSectionSize(200);
+// 	table.horizontalHeader()->setStretchLastSection(true);
+// 	table.verticalHeader()->setStretchLastSection(true);
+// 	table.setSelectionMode(QAbstractItemView::MultiSelection);
+// 	QStringList headerList;
+// 	headerList << "A" << "B" << "C";
+// 	table.setColumnCount(6);
+// 	table.setRowCount(6);
+// 	table.setHorizontalHeaderLabels(headerList);
+// 	table.show();
+
 	
 	// 	client myClient;
 	// 	myClient.show();

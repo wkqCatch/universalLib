@@ -6,8 +6,10 @@
 #include <QModbusDevice>
 #include <QModbusDataUnit>
 #include <QModbusReply>
-#include <QModbusRtuSerialMaster>
-#include <QModbusRtuSerialSlave>
+
+#include "QCustomModbusClient.h"
+#include "QCustomModbusServer.h"
+#include "QCustomSerialPort.h"
 
 #include "QCustomModbusClient.h"
 #include "QCustomModbusServer.h"
@@ -19,18 +21,15 @@
 #pragma comment(lib, "../X64/Release/QUniversalFrameLib.lib")
 #endif
 
-QSerialportUI::QSerialportUI(QWidget *parent, const CommunicationSettings &settings)
+QSerialportUI::QSerialportUI(QWidget *parent)
 	: QDialog(parent)
 	, m_pCustomModbuClient(nullptr)
 	, m_pCustomModbusServer(nullptr)
+	, m_pSerialPort(nullptr)
 	, m_pCustomTitleBar(nullptr)
-	, m_paramSetting(settings)
-	, m_communicateMode(unConnect)
+	, m_communicateMode(FreeProtocol)
 {
 	setupUi(this);
-
-	m_pCustomModbuClient = new QCustomModbusClient();
-	m_pCustomModbusServer = new QCustomModbusServer();
 
 	QList<QSerialPortInfo> serialInfoList = QSerialPortInfo::availablePorts();
 
@@ -60,59 +59,85 @@ QSerialportUI::QSerialportUI(QWidget *parent, const CommunicationSettings &setti
 	QStyledItemDelegate *pRegisterType = new QStyledItemDelegate();
 	m_pcomboRegisterType->setItemDelegate(pRegisterType);
 
-	updateControl();
-	enableModeControl(unConnect);
-
-	connect(m_ppbConnect, QOverload<bool>::of(&QPushButton::clicked), 
-					this, QOverload<bool>::of(&QSerialportUI::slot_btConnect_Clicked));
-	connect(m_pCustomModbuClient, &QCustomModbusClient::sig_replyReady, this, &QSerialportUI::slot_requestReply);
+	connect(m_ppbConnect, QOverload<bool>::of(&QPushButton::clicked),
+		this, QOverload<bool>::of(&QSerialportUI::slot_btConnect_Clicked));
 }
 
 QSerialportUI::~QSerialportUI()
 {
-	if (m_pCustomModbuClient)
-	{
-		delete m_pCustomModbuClient;
-		m_pCustomModbuClient = nullptr;
-	}
-
-	if (m_pCustomModbusServer)
-	{
-		delete m_pCustomModbusServer;
-		m_pCustomModbusServer = nullptr;
-	}
+	detachSerialPort();
 }
 
-void QSerialportUI::updateControl()
+void QSerialportUI::updateControl(const CommunicationSettings &settings)
 {
-	m_pcomboSerialSel->setCurrentText(m_paramSetting.strSerialPortName);
-	m_pcomboBaudRate->setCurrentText(QString::number(m_paramSetting.nBaudRate));
-	m_pcomboDataBits->setCurrentText(QString::number(m_paramSetting.nDataBits));
-	m_pcomboStopBits->setCurrentText(QString::number(m_paramSetting.nStopBits));
-	m_pcomboParity->setCurrentText(m_paramSetting.strParity);
+	m_communicateMode = static_cast<CommunicationMode>(settings.nCommunicationMode);
 
-	m_psbReplyOverTime->setValue(m_paramSetting.nReplyOverTime);
-	m_psbRetryTimes->setValue(m_paramSetting.nRetryTimes);
+	m_pcomboSerialSel->setCurrentText(settings.strSerialPortName);
+	m_pcomboBaudRate->setCurrentText(QString::number(settings.nBaudRate));
+	m_pcomboDataBits->setCurrentText(QString::number(settings.nDataBits));
+	m_pcomboStopBits->setCurrentText(QString::number(settings.nStopBits));
+	if(settings.nParity > 0)
+	{
+		m_pcomboParity->setCurrentIndex(settings.nParity - 1);
+	}
+	else
+	{
+		m_pcomboParity->setCurrentIndex(settings.nParity);
+	}
+	
+	m_psbReplyOverTime->setValue(settings.nReplyOverTime);
+	m_psbRetryTimes->setValue(settings.nRetryTimes);
 
-	m_psbStationNumber->setValue(m_paramSetting.ucStationNum);
-	m_pcomboSerialProtocol->setCurrentText(m_paramSetting.strCommunicationProtocol);
-	m_pcomboMasterOrSlave->setCurrentText(m_paramSetting.strMasterOrSlave);
+	m_psbStationNumber->setValue(settings.ucStationNum);
+	m_pcomboSerialProtocol->setCurrentIndex(settings.nCommunicationMode);
 }
 
-void QSerialportUI::updateParam()
+bool QSerialportUI::updateParam()
 {
-	m_paramSetting.strSerialPortName = m_pcomboSerialSel->currentText();
-	m_paramSetting.nBaudRate = m_pcomboBaudRate->currentText().toInt();
-	m_paramSetting.nDataBits = m_pcomboDataBits->currentText().toInt();
-	m_paramSetting.nStopBits = m_pcomboStopBits->currentText().toInt();
-	m_paramSetting.strParity = m_pcomboParity->currentText();
+	CommunicationSettings settings;
+	bool bResult = false;
 
-	m_paramSetting.nReplyOverTime = m_psbReplyOverTime->value();
-	m_paramSetting.nRetryTimes = m_psbRetryTimes->value();
+	settings.strSerialPortName = m_pcomboSerialSel->currentText();
+	settings.nBaudRate = m_pcomboBaudRate->currentText().toInt();
+	settings.nDataBits = m_pcomboDataBits->currentText().toInt();
+	settings.nStopBits = m_pcomboStopBits->currentText().toInt();
+	if(m_pcomboParity->currentIndex() > 0)
+	{
+		settings.nParity = m_pcomboParity->currentIndex() + 1;
+	}
+	else
+	{
+		settings.nParity = m_pcomboParity->currentIndex();
+	}
 
-	m_paramSetting.ucStationNum = m_psbStationNumber->value();
-	m_paramSetting.strCommunicationProtocol = m_pcomboSerialProtocol->currentText();
-	m_paramSetting.strMasterOrSlave = m_pcomboMasterOrSlave->currentText();
+	settings.nReplyOverTime = m_psbReplyOverTime->value();
+	settings.nRetryTimes = m_psbRetryTimes->value();
+
+	settings.ucStationNum = m_psbStationNumber->value();
+	settings.nCommunicationMode = m_pcomboSerialProtocol->currentIndex();
+
+	switch (m_communicateMode)
+	{
+	case FreeProtocol:
+		break;
+
+	case ModbusRtuClient:
+		if(m_pCustomModbuClient == nullptr)
+		{
+			break;
+		}
+
+		bResult = m_pCustomModbuClient->setParameter(settings);
+		break;
+
+	case ModbusRtuServer:
+		break;
+
+	default:
+		break;
+	}
+
+	return false;
 }
 
 void QSerialportUI::enableParamControl(bool bState)
@@ -123,20 +148,16 @@ void QSerialportUI::enableParamControl(bool bState)
 	m_pcomboStopBits->setEnabled(bState);
 	m_pcomboParity->setEnabled(bState);
 	m_psbStationNumber->setEnabled(bState);
-	m_pcomboSerialProtocol->setEnabled(bState);
-	m_pcomboMasterOrSlave->setEnabled(bState);
+	//m_pcomboSerialProtocol->setEnabled(bState);
 	m_psbReplyOverTime->setEnabled(bState);
 	m_psbRetryTimes->setEnabled(bState);
 }
 
 void QSerialportUI::enableModeControl(CommunicationMode mode)
 {
-	m_communicateMode = mode;
-
 	switch (mode)
 	{
-	case QSerialportUI::unConnect:
-	case QSerialportUI::ModbusServer:
+	case ModbusRtuServer:
 		m_pcomboRegisterType->setEnabled(false);
 		m_psbStartAddress->setEnabled(false);
 		m_psbNumOfValue->setEnabled(false);
@@ -147,7 +168,7 @@ void QSerialportUI::enableModeControl(CommunicationMode mode)
 		m_ppbSendCustomData->setEnabled(false);
 		break;
 
-	case QSerialportUI::FreeProtocol:
+	case FreeProtocol:
 		m_pcomboRegisterType->setEnabled(false);
 		m_psbStartAddress->setEnabled(false);
 		m_psbNumOfValue->setEnabled(false);
@@ -158,7 +179,7 @@ void QSerialportUI::enableModeControl(CommunicationMode mode)
 		m_ppbSendCustomData->setEnabled(true);
 		break;
 
-	case QSerialportUI::ModbusClient:
+	case ModbusRtuClient:
 		m_pcomboRegisterType->setEnabled(true);
 		m_psbStartAddress->setEnabled(true);
 		m_psbNumOfValue->setEnabled(true);
@@ -174,23 +195,72 @@ void QSerialportUI::enableModeControl(CommunicationMode mode)
 	}
 }
 
+void QSerialportUI::attachModbusClient(QCustomModbusClient * pModbusClient)
+{
+	if(pModbusClient == nullptr)
+	{
+		return;
+	}
+
+	m_pCustomModbuClient = pModbusClient;
+	connect(m_pCustomModbuClient, &QCustomModbusClient::sig_replyReady, this, &QSerialportUI::slot_requestReply);
+
+	CommunicationSettings settingss = m_pCustomModbuClient->getParameter();
+
+	m_communicateMode = static_cast<CommunicationMode>(settingss.nCommunicationMode);
+
+	updateControl(settingss);
+	enableModeControl(m_communicateMode);
+
+	if(m_pCustomModbuClient->getCurrentState() == QModbusDevice::ConnectedState)
+	{
+		m_ppbConnect->setChecked(true);
+		m_ppbConnect->setText(QStringLiteral("断 开"));
+		m_plbSerialState->setText(QStringLiteral("连接成功"));
+		enableParamControl(false);
+	}
+	else
+	{
+		enableParamControl(true);
+	}
+}
+
+void QSerialportUI::attachModbusServer(QCustomModbusServer * pModbusServer)
+{
+	m_pCustomModbusServer = pModbusServer;
+	
+}
+
+void QSerialportUI::attachFreeSerialPort(QCustomSerialPort * pSerialPort)
+{
+	m_pSerialPort = pSerialPort;
+	
+}
+
+void QSerialportUI::detachSerialPort()
+{
+	m_pCustomModbuClient = nullptr;
+	m_pCustomModbusServer = nullptr;
+	m_pCustomTitleBar = nullptr;
+}
+
 void QSerialportUI::slot_bt_sendModbus_clicked()
 {
-	if (m_pCustomModbuClient == nullptr || 
-		static_cast<QModbusDevice::State>(m_pCustomModbuClient->currentState()) != QModbusDevice::ConnectedState)
+	if (m_pCustomModbuClient == nullptr ||
+		static_cast<QModbusDevice::State>(m_pCustomModbuClient->getCurrentState()) != QModbusDevice::ConnectedState)
 	{
 		return;
 	}
 
 	m_ppbSendProtocol->setEnabled(false);
 	m_plbSendResultDetail->setText("");
-	if(m_prbModbusRead->isChecked())
+	if (m_prbModbusRead->isChecked())
 	{
 		m_pCustomModbuClient->readRequest(m_pcomboRegisterType->currentIndex(), m_psbStartAddress->value(),
-										  m_psbNumOfValue->value(), m_psbStationNumber->value());
+			m_psbNumOfValue->value(), m_psbStationNumber->value());
 
 		m_pteShowMessage->append(QString("TX: Station-%1 Read%2 Addr-%3 Num-%4").arg(m_psbStationNumber->value())\
-				.arg(m_pcomboRegisterType->currentText()).arg(m_psbStartAddress->value()).arg(m_psbNumOfValue->value()));
+			.arg(m_pcomboRegisterType->currentText()).arg(m_psbStartAddress->value()).arg(m_psbNumOfValue->value()));
 	}
 	else
 	{
@@ -203,10 +273,10 @@ void QSerialportUI::slot_bt_sendModbus_clicked()
 		vecDatas.append(6);
 
 		m_pCustomModbuClient->writeRequest(m_pcomboRegisterType->currentIndex(), m_psbStartAddress->value(),
-										   vecDatas, m_psbStationNumber->value());
+			vecDatas, m_psbStationNumber->value());
 
 		QString strTxData = QString("TX: Station-%1 Write%2 Addr-%3 Data-").arg(m_psbStationNumber->value())\
-							.arg(m_pcomboRegisterType->currentText()).arg(m_psbStartAddress->value());
+			.arg(m_pcomboRegisterType->currentText()).arg(m_psbStartAddress->value());
 
 		for (int i = 0; i < vecDatas.length(); i++)
 		{
@@ -221,7 +291,7 @@ void QSerialportUI::slot_requestReply(QModbusReply * pReply)
 {
 	m_ppbSendProtocol->setEnabled(true);
 
-	if(pReply == nullptr)
+	if (pReply == nullptr)
 	{
 		m_plbSendResultDetail->setText(QStringLiteral("通信失败"));
 		return;
@@ -233,7 +303,7 @@ void QSerialportUI::slot_requestReply(QModbusReply * pReply)
 			m_plbSendResultDetail->setText(QStringLiteral("发送成功"));
 
 			QModbusDataUnit dataUnit = pReply->result();
-			if(m_prbModbusRead->isChecked())
+			if (m_prbModbusRead->isChecked())
 			{
 				QVector<quint16> vecDatas = dataUnit.values();
 
@@ -270,27 +340,25 @@ void QSerialportUI::slot_btConnect_Clicked(bool bState)
 	{
 		updateParam();
 
-		if (m_pcomboSerialProtocol->currentText() == QStringLiteral("Modbus RTU"))
+		if (m_communicateMode == ModbusRtuClient)
 		{
-			if (m_pcomboMasterOrSlave->currentText() == QStringLiteral("主站"))
+			if(m_pCustomModbuClient == nullptr)
 			{
-				if (m_pCustomModbuClient->connectModbusClient(m_paramSetting))
-				{
-					m_ppbConnect->setText(QStringLiteral("断 开"));
-					m_plbSerialState->setText(QStringLiteral("连接成功"));
-					enableParamControl(false);
-					enableModeControl(ModbusClient);
-				}
-				else
-				{
-					m_plbSerialState->setText(QStringLiteral("连接失败"));
-
-					m_ppbConnect->setChecked(false);
-				}
+				return;
 			}
-			else if (m_pcomboMasterOrSlave->currentText() == QStringLiteral("从站"))
-			{
 
+			if (m_pCustomModbuClient->connectModbusClient())
+			{
+				m_ppbConnect->setText(QStringLiteral("断 开"));
+				m_plbSerialState->setText(QStringLiteral("连接成功"));
+				enableParamControl(false);
+				enableModeControl(ModbusRtuClient);
+			}
+			else
+			{
+				m_plbSerialState->setText(QStringLiteral("连接失败"));
+
+				m_ppbConnect->setChecked(false);
 			}
 		}
 		else
@@ -300,11 +368,16 @@ void QSerialportUI::slot_btConnect_Clicked(bool bState)
 	}
 	else
 	{
+		if(m_pCustomModbuClient == nullptr)
+		{
+			return;
+		}
+
 		m_pCustomModbuClient->disconnectModbusClient();
 
 		m_ppbConnect->setText(QStringLiteral("连 接"));
 		m_plbSerialState->setText(QStringLiteral("暂未连接"));
 		enableParamControl(true);
-		enableModeControl(unConnect);
+		enableModeControl(ModbusRtuServer);
 	}
 }

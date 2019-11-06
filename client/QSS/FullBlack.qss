@@ -1165,7 +1165,8 @@ QTableView QTableCornerButton::section
 QTableView
 {
     border: 1px solid #76797C; 
-    gridline-color: #31363b; 
+    /*gridline-color: #31363b; */
+	gridline-color: #31363b; 
     background-color: #232629;
 	padding-top: 0px;
 	font-size:16px;

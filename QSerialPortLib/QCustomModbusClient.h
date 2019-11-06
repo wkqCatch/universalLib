@@ -8,6 +8,7 @@
 #include <QMutex>
 #include <QSemaphore>
 #include <QReadWriteLock>
+#include <QMap>
 
 class QModbusClient;
 class QModbusRtuSerialMaster;
@@ -22,13 +23,11 @@ public:
 	explicit QCustomModbusClient(QObject *parent = nullptr);
 	~QCustomModbusClient();
 
-	void setParameter(const CommunicationSettings &settings);				//设置参数
-	void setParameter(const QString &strPortName, const int &nBaudRate, const int &nDataBits, const int &nStopBits,
+	bool setParameter(const CommunicationSettings &settings);				 //设置参数
+	bool setParameter(const QString &strPortName, const int &nBaudRate, const int &nDataBits, const int &nStopBits,
 					 const int &nParity, const int &nOverTime, const int &nRetryTimes);
-
-	bool connectModbusClient(const CommunicationSettings &settings);        //连接modbus客户端
-	bool connectModbusClient(const QString &strPortName, const int &nBaudRate, const int &nDataBits, const int &nStopBits,
-		const int &nParity, const int &nOverTime, const int &nRetryTimes);
+	
+	bool connectModbusClient();                                             //连接modbus客户端  
 
 	void disconnectModbusClient();											//断开modbus客户端
 
@@ -36,19 +35,19 @@ public:
 	QModbusDataUnit constructRequest(const int &regType, const int &nStartAddress, const unsigned short &nValue);
 	QModbusDataUnit constructRequest(const int &regType, const int &nStartAddress, const QVector<quint16> &nDatas);
 
-	int currentError();														//当前的错误
-	int currentState();                                                     //当前的状态
-
 	bool readRequest(const int &regType, const int &nStartAddress, const unsigned short &nValue,
 					 const int &nServerAddr);
 	bool writeRequest(const int &regType, const int &nStartAddress, const QVector<quint16> &nDatas,
-							const int &nServerAddr);
+					  const int &nServerAddr);
+
+	int getCurrentError() const;								//当前的错误
+	int getCurrentState() const;                              //当前的状态
+	CommunicationSettings getParameter() const;         //获取串口参数
 
 signals:
 	void sig_setParam(QString strPortName, int nBaudRate, int nDataBits, int nStopBits,
 					 int nParity, int nOverTime, int nRetryTimes);
-	void sig_connectClient(QString strPortName, int nBaudRate, int nDataBits, int nStopBits,
-							int nParity, int nOverTime, int nRetryTimes);
+	void sig_connectClient();
 	void sig_disconnectClient();
 	void sig_readRequest(int regType, int nStartAddress, unsigned short nValue, int nServerAddr);
 	void sig_writeRequest(int nRegType, int nStartAddress, QVector<quint16> vecDatas, int nServerAddr);       
@@ -58,8 +57,7 @@ public slots:
 	void slot_threadStart();     //线程开始的槽
 	void slot_setParam(QString strPortName, int nBaudRate, int nDataBits, int nStopBits,
 					  int nParity, int nOverTime, int nRetryTimes);
-	void slot_connectClient(QString strPortName, int nBaudRate, int nDataBits, int nStopBits,
-							int nParity, int nOverTime, int nRetryTimes);
+	void slot_connectClient();
 	void slot_disconnectClient();
 
 	void slot_readRequest(int regType, int nStartAddress, unsigned short nValue, int nServerAddr);
@@ -75,17 +73,20 @@ private:
 
 	QMutex m_mutexSetParam;              //设置参数的锁
 	QSemaphore m_semSetParam;            //设置参数的信号
+	bool m_bSetParamFlag;                //设置参数是否成功标志
 
 	QMutex m_mutexConnect;				 //连接的锁
 	QSemaphore m_semConnect;             //连接的信号
 	bool   m_bConnectFlag;               //连接的标志
 
 	QMutex m_mutexDisconnect;			 //断开的锁
-	QSemaphore m_semDisconnect;        //断开的信号
+	QSemaphore m_semDisconnect;          //断开的信号
 
 	QMutex m_mutexReadRequest;			 //读数据的锁
 	QMutex m_mutexWriteRequest;			 //写数据的锁
 	bool   m_bCommunicating;             //正在通讯标志位
 
 	QReadWriteLock m_rwlockCommunicatingState; //改变通信状态的锁
+
+	QMap<QString, int> m_mapRegisterPair;       //寄存器对
 };

@@ -28,6 +28,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCameraLib", "QCameraLib\QC
 		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCustomModelViewLib", "QCustomModelViewLib\QCustomModelViewLib.vcxproj", "{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QImageProcLib", "QImageProcLib\QImageProcLib.vcxproj", "{1A564B66-D12A-4282-B0A3-AC133E069EC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -54,11 +58,19 @@ Global
 		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}.Debug|x64.Build.0 = Debug|x64
 		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}.Release|x64.ActiveCfg = Release|x64
 		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}.Release|x64.Build.0 = Release|x64
+		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Debug|x64.ActiveCfg = Debug|x64
+		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Debug|x64.Build.0 = Debug|x64
+		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Release|x64.ActiveCfg = Release|x64
+		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Release|x64.Build.0 = Release|x64
+		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Debug|x64.ActiveCfg = Debug|x64
+		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Debug|x64.Build.0 = Debug|x64
+		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Release|x64.ActiveCfg = Release|x64
+		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = msvc2015_98
+		Qt5Version = msvc2015_513
 	EndGlobalSection
 EndGlobal

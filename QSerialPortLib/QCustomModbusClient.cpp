@@ -5,6 +5,8 @@
 #include <QModbusTcpClient>
 #include <QModbusDataUnit>
 
+#include <QSerialPort>
+
 #include <QVariant>
 #include <QThread>
 
@@ -44,42 +46,22 @@ QCustomModbusClient::~QCustomModbusClient()
 
 	delete m_pThread;
 	m_pThread = nullptr;
-
-	if (m_pModbusClient)
-	{
-		m_pModbusClient->disconnectDevice();
-		delete m_pModbusClient;
-		m_pModbusClient = nullptr;
-	}
 }
 
 void QCustomModbusClient::slot_threadStart()
 {
 	m_pModbusClient = new QModbusRtuSerialMaster();
 	m_pModbusClient->moveToThread(m_pThread);
+	connect(m_pThread, &QThread::finished, m_pModbusClient, &QCustomModbusClient::deleteLater);
 }
 
-void QCustomModbusClient::setParameter(const CommunicationSettings & settings)
+bool QCustomModbusClient::setParameter(const CommunicationSettings & settings)
 {
-	int nParity = 0;
-	if (settings.strParity == QStringLiteral("无校验"))
-	{
-		nParity = 0;
-	}
-	else if (settings.strParity == QStringLiteral("奇校验"))
-	{
-		nParity = 3;
-	}
-	else if (settings.strParity == QStringLiteral("偶校验"))
-	{
-		nParity = 2;
-	}
-
-	setParameter(settings.strSerialPortName, settings.nBaudRate, settings.nDataBits, settings.nStopBits,
-				nParity, settings.nReplyOverTime, settings.nRetryTimes);
+	return setParameter(settings.strSerialPortName, settings.nBaudRate, settings.nDataBits, settings.nStopBits,
+				settings.nParity, settings.nReplyOverTime, settings.nRetryTimes);
 }
 
-void QCustomModbusClient::setParameter(const QString &strPortName, const int &nBaudRate, const int &nDataBits, const int &nStopBits,
+bool QCustomModbusClient::setParameter(const QString &strPortName, const int &nBaudRate, const int &nDataBits, const int &nStopBits,
 									  const int &nParity, const int &nOverTime, const int &nRetryTimes)
 {
 	QMutexLocker mutexLocker(&m_mutexSetParam);
@@ -90,9 +72,12 @@ void QCustomModbusClient::setParameter(const QString &strPortName, const int &nB
 		m_semSetParam.tryAcquire(nAvailableSems);
 	}
 
+	m_bSetParamFlag = false;
 	emit sig_setParam(strPortName, nBaudRate, nDataBits, nStopBits, nParity, nOverTime, nRetryTimes);
 
-	m_semSetParam.tryAcquire(1, 5000);
+	bool bWait = m_semSetParam.tryAcquire(1, 5000);
+	
+	return bWait ? m_bSetParamFlag : false;
 }
 
 void QCustomModbusClient::slot_setParam(QString strPortName, int nBaudRate, int nDataBits, int nStopBits,
@@ -102,36 +87,20 @@ void QCustomModbusClient::slot_setParam(QString strPortName, int nBaudRate, int 
 	m_pModbusClient->setConnectionParameter(QModbusDevice::SerialBaudRateParameter, nBaudRate);
 	m_pModbusClient->setConnectionParameter(QModbusDevice::SerialDataBitsParameter, nDataBits);
 	m_pModbusClient->setConnectionParameter(QModbusDevice::SerialStopBitsParameter, nStopBits);
-	m_pModbusClient->setConnectionParameter(QModbusDevice::SerialParityParameter, nParity);
+	m_pModbusClient->setConnectionParameter(QModbusDevice::SerialParityParameter, QSerialPort::NoParity);
 
 	m_pModbusClient->setTimeout(nOverTime);
 	m_pModbusClient->setNumberOfRetries(nRetryTimes);
 
+	if(m_pModbusClient->error() == QModbusDevice::NoError)
+	{
+		m_bSetParamFlag = true;
+	}
+
 	m_semSetParam.release();
 }
 
-bool QCustomModbusClient::connectModbusClient(const CommunicationSettings &settings)
-{
-	int nParity = 0;
-	if (settings.strParity == QStringLiteral("无校验"))
-	{
-		nParity = 0;
-	}
-	else if (settings.strParity == QStringLiteral("奇校验"))
-	{
-		nParity = 3;
-	}
-	else if (settings.strParity == QStringLiteral("偶校验"))
-	{
-		nParity = 2;
-	}
-
-	return connectModbusClient(settings.strSerialPortName, settings.nBaudRate, settings.nDataBits, settings.nStopBits,
-							   nParity, settings.nReplyOverTime, settings.nRetryTimes);
-}
-
-bool QCustomModbusClient::connectModbusClient(const QString & strPortName, const int & nBaudRate, const int & nDataBits, 
-								const int & nStopBits, const int & nParity, const int & nOverTime, const int & nRetryTimes)
+bool QCustomModbusClient::connectModbusClient()
 {
 	QMutexLocker mutexLocker(&m_mutexConnect);
 
@@ -141,14 +110,13 @@ bool QCustomModbusClient::connectModbusClient(const QString & strPortName, const
 		m_semConnect.tryAcquire(nAvailableSems);
 	}
 
-	emit sig_connectClient(strPortName, nBaudRate, nDataBits, nStopBits, nParity, nOverTime, nRetryTimes);
+	emit sig_connectClient();
 	bool bWait = m_semConnect.tryAcquire(1, 5000);
 
-	return bWait? m_bConnectFlag: false;
+	return bWait ? m_bConnectFlag : false;
 }
 
-void QCustomModbusClient::slot_connectClient(QString strPortName, int nBaudRate, int nDataBits, 
-											 int nStopBits, int nParity, int nOverTime, int nRetryTimes)
+void QCustomModbusClient::slot_connectClient()
 {
 	if (m_pModbusClient->state() == QModbusDevice::ConnectedState)
 	{
@@ -156,8 +124,6 @@ void QCustomModbusClient::slot_connectClient(QString strPortName, int nBaudRate,
 		m_semConnect.release();
 		return;
 	}
-	
-	setParameter(strPortName, nBaudRate, nDataBits, nStopBits, nParity, nOverTime, nRetryTimes);
 
 	m_bConnectFlag = m_pModbusClient->connectDevice();
 
@@ -173,7 +139,7 @@ void QCustomModbusClient::disconnectModbusClient()
 	{
 		m_semDisconnect.tryAcquire(nAvailableSems);
 	}
-
+	
 	emit sig_disconnectClient();
 
 	m_semDisconnect.tryAcquire(1, 5000);
@@ -205,12 +171,12 @@ QModbusDataUnit QCustomModbusClient::constructRequest(const int &regType, const 
 	return QModbusDataUnit(static_cast<QModbusDataUnit::RegisterType>(regType), nStartAddress, nDatas);
 }
 
-int QCustomModbusClient::currentError()
+int QCustomModbusClient::getCurrentError() const
 {
 	return m_pModbusClient->error();
 }
 
-int QCustomModbusClient::currentState()
+int QCustomModbusClient::getCurrentState() const
 {
 	return static_cast<int>(m_pModbusClient->state());
 }
@@ -290,6 +256,21 @@ bool QCustomModbusClient::writeRequest(const int & regType, const int & nStartAd
 	emit sig_writeRequest(regType, nStartAddress, nDatas, nServerAddr);
 
 	return 0;
+}
+
+CommunicationSettings QCustomModbusClient::getParameter() const
+{
+	CommunicationSettings settings;
+	settings.strSerialPortName = m_pModbusClient->connectionParameter(QModbusDevice::SerialPortNameParameter).toString();
+	settings.nBaudRate = m_pModbusClient->connectionParameter(QModbusDevice::SerialBaudRateParameter).toInt();
+	settings.nDataBits = m_pModbusClient->connectionParameter(QModbusDevice::SerialDataBitsParameter).toInt();
+	settings.nStopBits = m_pModbusClient->connectionParameter(QModbusDevice::SerialStopBitsParameter).toInt();
+	settings.nParity = m_pModbusClient->connectionParameter(QModbusDevice::SerialParityParameter).toInt();
+	settings.nRetryTimes = m_pModbusClient->numberOfRetries();
+	settings.nReplyOverTime = m_pModbusClient->timeout();
+	settings.ucStationNum = 1;
+
+	return settings;
 }
 
 void QCustomModbusClient::slot_writeRequest(int nRegType, int nStartAddress, QVector<quint16> vecDatas, int nServerAddr)

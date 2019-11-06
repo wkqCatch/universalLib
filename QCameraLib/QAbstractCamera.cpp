@@ -2,4 +2,5 @@
 
 QAbstractCamera::QAbstractCamera()
 {
+
 }

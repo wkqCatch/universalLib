@@ -30,8 +30,7 @@ QCustomSerialPort::QCustomSerialPort(const QString & strName, QObject * pParent)
 	connect(this, &QCustomSerialPort::sig_Write, this, &QCustomSerialPort::slot_Write);
 	connect(this, &QCustomSerialPort::sig_Open, this, &QCustomSerialPort::slot_Open);
 
-	connect(m_pSerialPort, &QSerialPort::readyRead, this, &QCustomSerialPort::slot_DataReady);//实测时可以用currentThreadID来测试
-	//connect(m_pSerialPort, &QSerialPort::readyRead, this, &QCustomSerialPort::slotDataReady, Qt::DirectConnection);
+	connect(m_pSerialPort, &QSerialPort::readyRead, this, &QCustomSerialPort::slot_DataReady);  //实测时可以用currentThreadID来测试
 
 	m_pThread->start();
 }
@@ -50,9 +49,9 @@ QCustomSerialPort::~QCustomSerialPort()
 	m_pSerialPort = nullptr;
 }
 
-bool QCustomSerialPort::isOpen() const
+bool QCustomSerialPort::isOpened() const
 {
-	return m_bOpenResult;
+	return m_pSerialPort->isOpen();
 }
 
 void QCustomSerialPort::close()
@@ -131,9 +130,14 @@ void QCustomSerialPort::slot_Open(qint32 nOpenMode)
 	m_semOpen.release();
 }
 
+int QCustomSerialPort::currentError() const
+{
+	return m_pSerialPort->error();
+}
+
 qint64 QCustomSerialPort::write(QByteArray byteArray)
 {
-	if (!m_bOpenResult)
+	if (!m_pSerialPort->isOpen())
 	{
 		return -1;
 	}
@@ -154,13 +158,12 @@ qint64 QCustomSerialPort::write(QByteArray byteArray)
 
 qint64 QCustomSerialPort::write(const char * pData, qint64 nLength)
 {
-	if (!m_bOpenResult)
+	if (!m_pSerialPort->isOpen())
 	{
 		return -1;
 	}
 
 	QMutexLocker mutexLocker(&m_mutexWrite);
-	//m_mutexWrite.lock();
 
 	const int nAvailableSem = m_semWrite.available();
 	if (nAvailableSem > 0)
@@ -172,26 +175,15 @@ qint64 QCustomSerialPort::write(const char * pData, qint64 nLength)
 	const bool bWait = m_semWrite.tryAcquire(1, 5000);
 
 	return bWait ? m_nWriteLength : -1;
-
-	//m_mutexWrite.unlock();
-
-	//QMutexLocker locker(&m_mutexWriteLength);
-	//qint64 nReturn = bWait ? m_nWriteLength : 0;
-
-	//return nReturn;
 }
 
 void QCustomSerialPort::slot_Write(const char * pData, qint64 nLength)
 {
-	//m_mutexWriteLength.lock();
-
 	m_nWriteLength = -1;
 	if (m_pSerialPort->isOpen())
 	{
 		m_nWriteLength = (nLength < 0) ? m_pSerialPort->write(pData) : m_pSerialPort->write(pData, nLength);
 	}
-
-	//m_mutexWriteLength.unlock();
 
 	m_semWrite.release();
 }
@@ -216,33 +208,33 @@ bool QCustomSerialPort::SetSerialParam(const QString& strPortName, const int & n
 	return bWait? m_bSetSerialParamResult: false;
 }
 
-void QCustomSerialPort::slot_setSerialParam(const QString& strPortName, const int& nBaudRate, const int& ucDirection, 
-											const int& ucDataBits, const int& ucStopBits, const int& ucParity)
+void QCustomSerialPort::slot_setSerialParam(QString strPortName, int nBaudRate, int nDirection, 
+											int nDataBits, int nStopBits, int nParity)
 {
 	m_pSerialPort->setPortName(strPortName);
 
-	m_bSetSerialParamResult = m_pSerialPort->setBaudRate(nBaudRate, static_cast<QSerialPort::Direction>(ucDirection));
+	m_bSetSerialParamResult = m_pSerialPort->setBaudRate(nBaudRate, static_cast<QSerialPort::Direction>(nDirection));
 	if(!m_bSetSerialParamResult)
 	{
 		m_semSetSerialParam.release();
 		return;
 	}
 
-	m_bSetSerialParamResult = m_pSerialPort->setDataBits(static_cast<QSerialPort::DataBits>(ucDataBits));
+	m_bSetSerialParamResult = m_pSerialPort->setDataBits(static_cast<QSerialPort::DataBits>(nDataBits));
 	if (!m_bSetSerialParamResult)
 	{
 		m_semSetSerialParam.release();
 		return;
 	}
 
-	m_bSetSerialParamResult = m_pSerialPort->setStopBits(static_cast<QSerialPort::StopBits>(ucStopBits));
+	m_bSetSerialParamResult = m_pSerialPort->setStopBits(static_cast<QSerialPort::StopBits>(nStopBits));
 	if(!m_bSetSerialParamResult)
 	{
 		m_semSetSerialParam.release();
 		return;
 	}
 
-	m_bSetSerialParamResult = m_pSerialPort->setParity(static_cast<QSerialPort::Parity>(ucParity));
+	m_bSetSerialParamResult = m_pSerialPort->setParity(static_cast<QSerialPort::Parity>(nParity));
 	if (!m_bSetSerialParamResult)
 	{
 		m_semSetSerialParam.release();

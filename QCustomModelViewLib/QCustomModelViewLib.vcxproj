@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{DC2AC134-6A8D-4F4F-A983-0F37954EF87B}</ProjectGuid>
+    <ProjectGuid>{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}</ProjectGuid>
     <Keyword>QtVS_v301</Keyword>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -37,7 +37,6 @@
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
   </Target>
-  
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -46,91 +45,63 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" /><ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')"><Import Project="$(QtMsBuild)\qt_defaults.props" /></ImportGroup><PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'"><QtInstall>msvc2015_513</QtInstall><QtModules>core;gui;widgets</QtModules></PropertyGroup><PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"><QtInstall>msvc2015_513</QtInstall><QtModules>core;gui;widgets</QtModules></PropertyGroup><ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')"><Import Project="$(QtMsBuild)\qt.props" /></ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>msvc2015_513</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>msvc2015_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QUNIVERSALFRAMELIB_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
+      <PreprocessorDefinitions>QCUSTOMMODELVIEWLIB_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <QtMoc>
-      
-      
-      
-      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-    <QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir><QtMocFileName>moc_%(Filename).cpp</QtMocFileName></QtMoc>
-    <QtRcc>
-      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
-      
-    <QtRccDir>.\GeneratedFiles</QtRccDir><QtRccFileName>qrc_%(Filename).cpp</QtRccFileName></QtRcc>
-    <QtUic>
-      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
-      
-    <QtUicDir>.\GeneratedFiles</QtUicDir><QtUicFileName>ui_%(Filename).h</QtUicFileName></QtUic>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;NDEBUG;QUNIVERSALFRAMELIB_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
+      <PreprocessorDefinitions>QCUSTOMMODELVIEWLIB_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <QtMoc>
-      
-      
-      
-      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-    <QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir><QtMocFileName>moc_%(Filename).cpp</QtMocFileName></QtMoc>
-    <QtRcc>
-      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
-      
-    <QtRccDir>.\GeneratedFiles</QtRccDir><QtRccFileName>qrc_%(Filename).cpp</QtRccFileName></QtRcc>
-    <QtUic>
-      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
-      
-    <QtUicDir>.\GeneratedFiles</QtUicDir><QtUicFileName>ui_%(Filename).h</QtUicFileName></QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="QCustomDialogTitleBar.cpp" />
-    <ClCompile Include="QCustomMainWindowMenuBar.cpp" />
-    <ClCompile Include="QCustomMessageBox.cpp" />
+    <ClCompile Include="QCustomTableModel.cpp" />
+    <ClCompile Include="QCustomTableView.cpp" />
+    <ClCompile Include="QCustomTableWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="QCustomDialogTitleBar.h" />
-    <QtMoc Include="QCustomMessageBox.h" />
-    <ClInclude Include="GeneratedFiles\ui_QCustomMessageBox.h" />
-    <ClInclude Include="resource.h" />
-    <QtMoc Include="QCustomMainWindowMenuBar.h" />
-    <ClInclude Include="quniversalframelib_global.h" />
+    <QtMoc Include="QCustomTableModel.h" />
+    <QtMoc Include="QCustomTableView.h" />
+    <QtMoc Include="QCustomTableWidget.h" />
+    <ClInclude Include="qcustommodelviewlib_global.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="QUniversalFrameLib.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtRcc Include="UniversalFrameLib.qrc" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="QCustomMessageBox.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
@@ -140,7 +111,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties />
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" MocOptions="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
