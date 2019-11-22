@@ -21,15 +21,26 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="QCustomTableWidget.cpp">
+    <ClCompile Include="QCustomTableView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QCustomTableModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QCustomTableView.cpp">
+    <ClCompile Include="QCustomTableWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QTableWidgetCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="QCustomTableView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QTableWidgetCommands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qcustommodelviewlib_global.h">
@@ -40,11 +51,13 @@
     <QtMoc Include="QCustomTableModel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="QCustomTableView.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="QCustomTableWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="QCustomModelViewQrc.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
   </ItemGroup>
 </Project>

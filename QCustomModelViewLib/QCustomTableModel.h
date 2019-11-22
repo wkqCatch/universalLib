@@ -11,3 +11,5 @@ public:
 	QCustomTableModel(QObject *parent);
 	virtual ~QCustomTableModel();
 };
+
+

@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "client\client.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
-		{AE8CEC37-D111-40FA-B085-298C80AC4B39} = {AE8CEC37-D111-40FA-B085-298C80AC4B39}
-		{DB283387-6DA1-484A-B4A3-A65E5EAD8D1D} = {DB283387-6DA1-484A-B4A3-A65E5EAD8D1D}
-		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E} = {41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QUniversalFrameLib", "QUniversalFrameLib\QUniversalFrameLib.vcxproj", "{DC2AC134-6A8D-4F4F-A983-0F37954EF87B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMotionControlLib", "QMotionControlLib\QMotionControlLib.vcxproj", "{AE8CEC37-D111-40FA-B085-298C80AC4B39}"
@@ -23,14 +15,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QSerialPortLib", "QSerialPo
 		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCameraLib", "QCameraLib\QCameraLib.vcxproj", "{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMyClient", "QMyClient\QMyClient.vcxproj", "{E2197762-6367-48E2-8874-CC616F406A24}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCustomModelViewLib", "QCustomModelViewLib\QCustomModelViewLib.vcxproj", "{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QImageProcLib", "QImageProcLib\QImageProcLib.vcxproj", "{1A564B66-D12A-4282-B0A3-AC133E069EC7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCustomModelViewLib", "QCustomModelViewLib\QCustomModelViewLib.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +25,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.ActiveCfg = Debug|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.Build.0 = Debug|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
 		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B}.Debug|x64.ActiveCfg = Debug|x64
 		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B}.Debug|x64.Build.0 = Debug|x64
 		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B}.Release|x64.ActiveCfg = Release|x64
@@ -54,18 +37,14 @@ Global
 		{DB283387-6DA1-484A-B4A3-A65E5EAD8D1D}.Debug|x64.Build.0 = Debug|x64
 		{DB283387-6DA1-484A-B4A3-A65E5EAD8D1D}.Release|x64.ActiveCfg = Release|x64
 		{DB283387-6DA1-484A-B4A3-A65E5EAD8D1D}.Release|x64.Build.0 = Release|x64
-		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}.Debug|x64.ActiveCfg = Debug|x64
-		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}.Debug|x64.Build.0 = Debug|x64
-		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}.Release|x64.ActiveCfg = Release|x64
-		{41DCB2C3-2139-48EA-86E8-A446CFCB9B7E}.Release|x64.Build.0 = Release|x64
-		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Debug|x64.ActiveCfg = Debug|x64
-		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Debug|x64.Build.0 = Debug|x64
-		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Release|x64.ActiveCfg = Release|x64
-		{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}.Release|x64.Build.0 = Release|x64
-		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Debug|x64.ActiveCfg = Debug|x64
-		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Debug|x64.Build.0 = Debug|x64
-		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Release|x64.ActiveCfg = Release|x64
-		{1A564B66-D12A-4282-B0A3-AC133E069EC7}.Release|x64.Build.0 = Release|x64
+		{E2197762-6367-48E2-8874-CC616F406A24}.Debug|x64.ActiveCfg = Debug|x64
+		{E2197762-6367-48E2-8874-CC616F406A24}.Debug|x64.Build.0 = Debug|x64
+		{E2197762-6367-48E2-8874-CC616F406A24}.Release|x64.ActiveCfg = Release|x64
+		{E2197762-6367-48E2-8874-CC616F406A24}.Release|x64.Build.0 = Release|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.ActiveCfg = Debug|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.Build.0 = Debug|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
+		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

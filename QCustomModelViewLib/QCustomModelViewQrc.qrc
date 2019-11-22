@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/RightKeyMenuIcon">
+        <file alias="add_disable">Resources/Add_Disable.png</file>
+        <file alias="add_enable">Resources/Add_Enable.png</file>
+        <file alias="copy_disable">Resources/Copy_Disable.png</file>
+        <file alias="copy_enable">Resources/Copy_Enable.png</file>
+        <file alias="cut_disable">Resources/Cut_Disable.png</file>
+        <file alias="cut_enable">Resources/Cut_Enable.png</file>
+        <file alias="delete_disable">Resources/Delete_Disable.png</file>
+        <file alias="delete_enable">Resources/Delete_Enable.png</file>
+        <file alias="insert_disable">Resources/Insert_Disable.png</file>
+        <file alias="insert_enable">Resources/Insert_Enable.png</file>
+        <file alias="paste_disable">Resources/Paste_Disable.png</file>
+        <file alias="paste_enable">Resources/Paste_Enable.png</file>
+        <file alias="redo_disable">Resources/Redo_Disable.png</file>
+        <file alias="redo_enable">Resources/Redo_Enable.png</file>
+        <file alias="undo_disable">Resources/Undo_Disable.png</file>
+        <file alias="undo_enable">Resources/Undo_Enable.png</file>
+    </qresource>
+</RCC>

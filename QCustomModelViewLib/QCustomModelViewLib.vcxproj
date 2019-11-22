@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F2EE0695-461F-4E27-A909-E9CDD8F1BA5E}</ProjectGuid>
+    <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
     <Keyword>QtVS_v301</Keyword>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -54,7 +54,7 @@
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>msvc2015_64</QtInstall>
+    <QtInstall>msvc2015_513</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -73,7 +73,6 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -94,14 +93,17 @@
     <ClCompile Include="QCustomTableModel.cpp" />
     <ClCompile Include="QCustomTableView.cpp" />
     <ClCompile Include="QCustomTableWidget.cpp" />
+    <ClCompile Include="QTableWidgetCommands.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="QCustomTableModel.h" />
-    <QtMoc Include="QCustomTableView.h" />
+    <ClInclude Include="QTableWidgetCommands.h" />
     <QtMoc Include="QCustomTableWidget.h" />
+    <QtMoc Include="QCustomTableModel.h" />
+    <ClInclude Include="QCustomTableView.h" />
     <ClInclude Include="qcustommodelviewlib_global.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtRcc Include="QCustomModelViewQrc.qrc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

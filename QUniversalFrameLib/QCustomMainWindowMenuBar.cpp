@@ -106,7 +106,10 @@ QCustomMainWindowMenuBar::QCustomMainWindowMenuBar(QMainWindow *pMainWindow, int
 	m_ptbMaximize->setAutoRaise(true);
 	m_ptbMaximize->setToolTip(QStringLiteral("向下还原"));
 	m_ptbMaximize->setIconSize(QSize(m_nMenubarHeight, m_nMenubarHeight));
-	m_ptbMaximize->setIcon(QIcon(":/MenuBarRc/restore"));
+	QIcon maximizeIcon;
+	maximizeIcon.addPixmap(QPixmap(":/MenuBarRc/restore"), QIcon::Normal);
+	maximizeIcon.addPixmap(QPixmap(":/MenuBarRc/restore_disable"), QIcon::Disabled);
+	m_ptbMaximize->setIcon(maximizeIcon);
 
 	m_ptbClose = new QToolButton();
 	m_ptbClose->setAutoRaise(true);

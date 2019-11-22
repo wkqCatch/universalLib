@@ -226,23 +226,24 @@ QMenu
 {
     border: 1px solid #76797C;
     color: #eff0f1;
-    margin: 2px;
+    margin: 1px;
 	font-weight:bold;
-	font-size:18px;
+	font-size:16px;
 /*	font-family: Microsoft New Tai Lue; */
 }
 
 QMenu::icon
 {
-    margin: 3px;
+    margin: 1px;
+	padding: 1px 6px 1px 6px;
 }
 
 QMenu::item
 {
-    padding: 2px 10px 1px 35px;
+    padding: 1px 6px 1px 25px;
     margin: 1px;
     border: 1px solid transparent; /* reserve space for selection border */
-	width: 180px;
+	min-width: 130px;
 }
 
 QMenu::item:selected:enabled

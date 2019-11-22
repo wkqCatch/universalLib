@@ -46,15 +46,6 @@
     <ClCompile Include="QSerialportUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QAbstractModbusDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="QFatekModbusDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="QAbsractModbusDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qserialportlib_global.h">
@@ -84,15 +75,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="QSerialportUI.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="QAbstractModbusDevice.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="QFatekModbusDevice.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="QAbsractModbusDevice.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

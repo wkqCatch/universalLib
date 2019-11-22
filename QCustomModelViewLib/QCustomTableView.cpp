@@ -1,12 +1,7 @@
 #include "QCustomTableView.h"
 
-QCustomTableView::QCustomTableView(QWidget *parent)
-	: QTableView(parent)
+QCustomTableView::QCustomTableView(QWidget *pParent)
+	: QTableView(pParent)
 {
-	
-}
 
-QCustomTableView::~QCustomTableView()
-{
-	
 }
