@@ -3,7 +3,7 @@
 #include "QCustomTableWidget.h"
 
 QTableWidgetDeleteCommand::QTableWidgetDeleteCommand(QCustomTableWidget *pTableWidget,
-													 QList<QStringList> &listRowContent, QList<int> &listRowIndex)
+	QList<QStringList> &listRowContent, QList<int> &listRowIndex)
 	: QUndoCommand()
 {
 	m_pTableWidget = pTableWidget;
@@ -13,7 +13,6 @@ QTableWidgetDeleteCommand::QTableWidgetDeleteCommand(QCustomTableWidget *pTableW
 
 QTableWidgetDeleteCommand::~QTableWidgetDeleteCommand()
 {
-
 }
 
 void QTableWidgetDeleteCommand::undo()
@@ -22,18 +21,18 @@ void QTableWidgetDeleteCommand::undo()
 
 	QList<QTableWidgetSelectionRange> listSelectedRange = m_pTableWidget->selectedRanges();
 
-	for(int nRangeCounter = 0; nRangeCounter < listSelectedRange.size(); nRangeCounter++)
+	for (int nRangeCounter = 0; nRangeCounter < listSelectedRange.size(); nRangeCounter++)
 	{
 		m_pTableWidget->setRangeSelected(listSelectedRange.at(nRangeCounter), false);
 	}
 
-	for(int nIndexCounter = 0; nIndexCounter < m_listRowIndex.size(); nIndexCounter++)
+	for (int nIndexCounter = 0; nIndexCounter < m_listRowIndex.size(); nIndexCounter++)
 	{
 		m_pTableWidget->insertRow(m_listRowIndex.at(nIndexCounter));
 
 		int nColumCountTemp = m_listRowContent.at(nIndexCounter).size();
 
-		for(int nContentCounter = 0; nContentCounter < nColumCountTemp; nContentCounter++)
+		for (int nContentCounter = 0; nContentCounter < nColumCountTemp; nContentCounter++)
 		{
 			QTableWidgetItem *pWidgetItem = new QTableWidgetItem();
 			pWidgetItem->setText(m_listRowContent.at(nIndexCounter).at(nContentCounter));
@@ -42,12 +41,14 @@ void QTableWidgetDeleteCommand::undo()
 		}
 	}
 
-	for(int nUndoRowCounter = 0; nUndoRowCounter < m_listRowIndex.size(); nUndoRowCounter++)
+	for (int nUndoRowCounter = 0; nUndoRowCounter < m_listRowIndex.size(); nUndoRowCounter++)
 	{
 		QTableWidgetSelectionRange selectedRange(m_listRowIndex.at(nUndoRowCounter), 0,
-												m_listRowIndex.at(nUndoRowCounter), m_pTableWidget->columnCount() - 1);
+			m_listRowIndex.at(nUndoRowCounter), m_pTableWidget->columnCount() - 1);
 		m_pTableWidget->setRangeSelected(selectedRange, true);
 	}
+
+	m_pTableWidget->updateActionState();
 }
 
 void QTableWidgetDeleteCommand::redo()
@@ -70,17 +71,26 @@ void QTableWidgetDeleteCommand::redo()
 
 	if (m_pTableWidget->rowCount() < 1)
 	{
+		m_pTableWidget->updateActionState();
 		return;
 	}
 
 	if (nFirstItemRowTemp < m_pTableWidget->rowCount())
 	{
-		m_pTableWidget->setCurrentItem(m_pTableWidget->item(nFirstItemRowTemp, 0));
+		if (m_pTableWidget->item(nFirstItemRowTemp, 0))
+		{
+			m_pTableWidget->setCurrentItem(m_pTableWidget->item(nFirstItemRowTemp, 0));
+		}
 	}
 	else
 	{
-		m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+		if (m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0))
+		{
+			m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+		}
 	}
+
+	m_pTableWidget->updateActionState();
 }
 
 QTableWidgetInsertCommand::QTableWidgetInsertCommand(QCustomTableWidget * pTableWidget, int nInsertRows)
@@ -91,7 +101,6 @@ QTableWidgetInsertCommand::QTableWidgetInsertCommand(QCustomTableWidget * pTable
 
 QTableWidgetInsertCommand::~QTableWidgetInsertCommand()
 {
-
 }
 
 void QTableWidgetInsertCommand::undo()
@@ -109,17 +118,26 @@ void QTableWidgetInsertCommand::undo()
 
 	if (m_pTableWidget->rowCount() < 1)
 	{
+		m_pTableWidget->updateActionState();
 		return;
 	}
 
 	if (m_nInsertRow < m_pTableWidget->rowCount())
 	{
-		m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_nInsertRow, 0));
+		if (m_pTableWidget->item(m_nInsertRow, 0))
+		{
+			m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_nInsertRow, 0));
+		}
 	}
 	else
 	{
-		m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+		if (m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0))
+		{
+			m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+		}
 	}
+
+	m_pTableWidget->updateActionState();
 }
 
 void QTableWidgetInsertCommand::redo()
@@ -137,7 +155,12 @@ void QTableWidgetInsertCommand::redo()
 
 	m_pTableWidget->InsertRowData(m_nInsertRow);
 
-	m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_nInsertRow, 0));
+	if (m_pTableWidget->item(m_nInsertRow, 0))
+	{
+		m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_nInsertRow, 0));
+	}
+
+	m_pTableWidget->updateActionState();
 }
 
 QTableWidgetCutCommand::QTableWidgetCutCommand(QCustomTableWidget * pTableWidget, QList<QStringList>& listRowContent, QList<int>& listRowIndex)
@@ -149,7 +172,6 @@ QTableWidgetCutCommand::QTableWidgetCutCommand(QCustomTableWidget * pTableWidget
 
 QTableWidgetCutCommand::~QTableWidgetCutCommand()
 {
-
 }
 
 void QTableWidgetCutCommand::undo()
@@ -186,6 +208,8 @@ void QTableWidgetCutCommand::undo()
 			m_listRowIndex.at(nUndoRowCounter), m_pTableWidget->columnCount() - 1);
 		m_pTableWidget->setRangeSelected(selectedRange, true);
 	}
+
+	m_pTableWidget->updateActionState();
 }
 
 void QTableWidgetCutCommand::redo()
@@ -212,21 +236,30 @@ void QTableWidgetCutCommand::redo()
 
 	if (m_pTableWidget->rowCount() < 1)
 	{
+		m_pTableWidget->updateActionState();
 		return;
 	}
 
 	if (nFirstItemRowTemp < m_pTableWidget->rowCount())
 	{
-		m_pTableWidget->setCurrentItem(m_pTableWidget->item(nFirstItemRowTemp, 0));
+		if (m_pTableWidget->item(nFirstItemRowTemp, 0))
+		{
+			m_pTableWidget->setCurrentItem(m_pTableWidget->item(nFirstItemRowTemp, 0));
+		}
 	}
 	else
 	{
-		m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+		if (m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0))
+		{
+			m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+		}
 	}
+
+	m_pTableWidget->updateActionState();
 }
 
 QTableWidgetPasteCommand::QTableWidgetPasteCommand(QCustomTableWidget * pTableWidget, QList<QStringList>& listRowContent,
-												  QList<QStringList>& listCopyAndCutContent, QList<int>& listRowIndex)
+	QList<QStringList>& listCopyAndCutContent, QList<int>& listRowIndex)
 {
 	m_pTableWidget = pTableWidget;
 	m_listRowContent = listRowContent;
@@ -237,7 +270,6 @@ QTableWidgetPasteCommand::QTableWidgetPasteCommand(QCustomTableWidget * pTableWi
 
 QTableWidgetPasteCommand::~QTableWidgetPasteCommand()
 {
-
 }
 
 void QTableWidgetPasteCommand::undo()
@@ -255,7 +287,7 @@ void QTableWidgetPasteCommand::undo()
 	{
 		m_pTableWidget->removeRow(nDeleteCounter);
 	}
-	
+
 	for (int nIndexCounter = 0; nIndexCounter < m_listRowIndex.size(); nIndexCounter++)
 	{
 		m_pTableWidget->insertRow(m_listRowIndex.at(nIndexCounter));
@@ -282,6 +314,8 @@ void QTableWidgetPasteCommand::undo()
 	{
 		m_pTableWidget->setCopyAndCutContent(m_listCopyAndCutContent);
 	}
+
+	m_pTableWidget->updateActionState();
 }
 
 void QTableWidgetPasteCommand::redo()
@@ -296,11 +330,11 @@ void QTableWidgetPasteCommand::redo()
 	}
 
 	int nFirstItemRowTemp = 0;
-	if(m_listRowIndex.size() > 0)
+	if (m_listRowIndex.size() > 0)
 	{
 		nFirstItemRowTemp = m_listRowIndex.at(0);
 	}
-	
+
 	for (int nDeleteCounter = m_listRowIndex.size() - 1; nDeleteCounter >= 0; nDeleteCounter--)
 	{
 		m_pTableWidget->removeRow(m_listRowIndex.at(nDeleteCounter));
@@ -308,16 +342,22 @@ void QTableWidgetPasteCommand::redo()
 
 	bool bLastRowFlag = false;
 
-	if(m_pTableWidget->rowCount() > 0)
+	if (m_pTableWidget->rowCount() > 0)
 	{
 		if (nFirstItemRowTemp < m_pTableWidget->rowCount())
 		{
-			m_pTableWidget->setCurrentItem(m_pTableWidget->item(nFirstItemRowTemp, 0));
+			if (m_pTableWidget->item(nFirstItemRowTemp, 0))
+			{
+				m_pTableWidget->setCurrentItem(m_pTableWidget->item(nFirstItemRowTemp, 0));
+			}
 		}
 		else
 		{
 			bLastRowFlag = true;
-			m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+			if (m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0))
+			{
+				m_pTableWidget->setCurrentItem(m_pTableWidget->item(m_pTableWidget->rowCount() - 1, 0));
+			}
 		}
 	}
 
@@ -350,20 +390,25 @@ void QTableWidgetPasteCommand::redo()
 	}
 
 	m_nPasteStartRow = nCurrentRow;
-	m_pTableWidget->setCurrentItem(m_pTableWidget->item(nCurrentRow, 0));
+	if (m_pTableWidget->item(nCurrentRow, 0))
+	{
+		m_pTableWidget->setCurrentItem(m_pTableWidget->item(nCurrentRow, 0));
+	}
 
-	QTableWidgetSelectionRange selectionRange(nCurrentRow, 0, nCurrentRow + m_listCopyAndCutContent.size() - 1, 
-												m_pTableWidget->columnCount() - 1);
+	QTableWidgetSelectionRange selectionRange(nCurrentRow, 0, nCurrentRow + m_listCopyAndCutContent.size() - 1,
+		m_pTableWidget->columnCount() - 1);
 	m_pTableWidget->setRangeSelected(selectionRange, true);
 
 	if (m_pTableWidget->getCopyOrCutFlag())
 	{
 		m_pTableWidget->ClearCopyAndCutContent();
 	}
+
+	m_pTableWidget->updateActionState();
 }
 
-QTableWidgetContentChangeCommand::QTableWidgetContentChangeCommand(QCustomTableWidget * pTableWidget, int & nChangedRow, 
-															QList<QString>& listNewContent, QList<QString>& listOldContent)
+QTableWidgetContentChangeCommand::QTableWidgetContentChangeCommand(QCustomTableWidget * pTableWidget, int & nChangedRow,
+	QList<QString>& listNewContent, QList<QString>& listOldContent)
 {
 	m_pTableWidget = pTableWidget;
 	m_nChangedRow = nChangedRow;
@@ -373,7 +418,6 @@ QTableWidgetContentChangeCommand::QTableWidgetContentChangeCommand(QCustomTableW
 
 QTableWidgetContentChangeCommand::~QTableWidgetContentChangeCommand()
 {
-
 }
 
 void QTableWidgetContentChangeCommand::undo()
@@ -387,12 +431,17 @@ void QTableWidgetContentChangeCommand::undo()
 		m_pTableWidget->setRangeSelected(listSelectedRange.at(nRangeCounter), false);
 	}
 
-	for(int nCounter = 0; nCounter < m_pTableWidget->columnCount(); nCounter++)
+	for (int nCounter = 0; nCounter < m_pTableWidget->columnCount(); nCounter++)
 	{
-		m_pTableWidget->item(m_nChangedRow, nCounter)->setText(m_listOldContent.at(nCounter));
+		if (m_pTableWidget->item(m_nChangedRow, nCounter))
+		{
+			m_pTableWidget->item(m_nChangedRow, nCounter)->setText(m_listOldContent.at(nCounter));
+		}
 	}
 
 	m_pTableWidget->setCurrentCell(m_nChangedRow, 0);
+
+	m_pTableWidget->updateActionState();
 }
 
 void QTableWidgetContentChangeCommand::redo()
@@ -408,8 +457,13 @@ void QTableWidgetContentChangeCommand::redo()
 
 	for (int nCounter = 0; nCounter < m_pTableWidget->columnCount(); nCounter++)
 	{
-		m_pTableWidget->item(m_nChangedRow, nCounter)->setText(m_listNewContent.at(nCounter));
+		if (m_pTableWidget->item(m_nChangedRow, nCounter))
+		{
+			m_pTableWidget->item(m_nChangedRow, nCounter)->setText(m_listNewContent.at(nCounter));
+		}
 	}
 
 	m_pTableWidget->setCurrentCell(m_nChangedRow, 0);
+
+	m_pTableWidget->updateActionState();
 }

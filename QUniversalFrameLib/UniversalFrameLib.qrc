@@ -7,6 +7,7 @@
         <file alias="maximize">Resources/maximize/maxmize5.png</file>
         <file alias="restore">Resources/maximize/maxmize6.png</file>
         <file alias="restore_disable">Resources/maximize/maxmize7.png</file>
+        <file alias="close_disable">Resources/close/close12_disable.png</file>
     </qresource>
     <qresource prefix="/MessageBoxRc">
         <file alias="questionIcon">Resources/GeneralDlg/question.png</file>

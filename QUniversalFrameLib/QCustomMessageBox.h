@@ -21,6 +21,8 @@ public:
 
 	void translateUI();   //翻译按钮盒里面的英文
 
+	QCustomDialogTitleBar* getCustomDialogTitleBar() const;
+
 protected:
 	QCustomDialogTitleBar *m_pCustomDlgTitleBar;
 };

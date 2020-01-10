@@ -21,6 +21,10 @@ public:
 	void setTitleName(QString strName);
 	void setTitleIcon(QString strName);
 	void hideMaximize(bool bMaximize);
+	void hideMinimize(bool bMinimize);
+	void enableMinimize(bool bEnable);
+	void enableMaximize(bool bEnable);
+	void enableClose(bool bEnable);
 
 	public slots:
 	void slotShowMaximizeOrNormal();

@@ -16,5 +16,13 @@
         <file alias="redo_enable">Resources/Redo_Enable.png</file>
         <file alias="undo_disable">Resources/Undo_Disable.png</file>
         <file alias="undo_enable">Resources/Undo_Enable.png</file>
+        <file alias="check_enable">Resources/Check_Enable.png</file>
+        <file alias="check_disable">Resources/Check_Disable.png</file>
+        <file alias="open_enable">Resources/Open_Enable.png</file>
+        <file alias="open_disable">Resources/Open_Disable.png</file>
+        <file alias="save_enable">Resources/Save_Enable.png</file>
+        <file alias="save_disable">Resources/Save_Disable.png</file>
+        <file alias="saveAs_enable">Resources/SaveAs_Enable.png</file>
+        <file alias="saveAs_disable">Resources/SaveAs_Disable.png</file>
     </qresource>
 </RCC>

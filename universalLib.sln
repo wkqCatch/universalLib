@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.960
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QUniversalFrameLib", "QUniversalFrameLib\QUniversalFrameLib.vcxproj", "{DC2AC134-6A8D-4F4F-A983-0F37954EF87B}"
 EndProject
@@ -16,8 +16,29 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QSerialPortLib", "QSerialPo
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMyClient", "QMyClient\QMyClient.vcxproj", "{E2197762-6367-48E2-8874-CC616F406A24}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
+		{AE8CEC37-D111-40FA-B085-298C80AC4B39} = {AE8CEC37-D111-40FA-B085-298C80AC4B39}
+		{67E3CE5F-7283-4BCF-B896-3679CEAFD5EB} = {67E3CE5F-7283-4BCF-B896-3679CEAFD5EB}
+		{88DDEB64-80C5-48E6-B671-A1E691B2A829} = {88DDEB64-80C5-48E6-B671-A1E691B2A829}
+		{E5A04578-F618-4B61-928E-3D05996B62D7} = {E5A04578-F618-4B61-928E-3D05996B62D7}
+		{DB283387-6DA1-484A-B4A3-A65E5EAD8D1D} = {DB283387-6DA1-484A-B4A3-A65E5EAD8D1D}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCustomModelViewLib", "QCustomModelViewLib\QCustomModelViewLib.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCustomModelViewLib", "QCustomModelViewLib\QCustomModelViewLib.vcxproj", "{88DDEB64-80C5-48E6-B671-A1E691B2A829}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCameraLib", "QCameraLib\QCameraLib.vcxproj", "{E5A04578-F618-4B61-928E-3D05996B62D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QImageProcessLib", "QImageProcessLib\QImageProcessLib.vcxproj", "{67E3CE5F-7283-4BCF-B896-3679CEAFD5EB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC2AC134-6A8D-4F4F-A983-0F37954EF87B} = {DC2AC134-6A8D-4F4F-A983-0F37954EF87B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,15 +62,24 @@ Global
 		{E2197762-6367-48E2-8874-CC616F406A24}.Debug|x64.Build.0 = Debug|x64
 		{E2197762-6367-48E2-8874-CC616F406A24}.Release|x64.ActiveCfg = Release|x64
 		{E2197762-6367-48E2-8874-CC616F406A24}.Release|x64.Build.0 = Release|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.ActiveCfg = Debug|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Debug|x64.Build.0 = Debug|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.ActiveCfg = Release|x64
-		{B12702AD-ABFB-343A-A199-8E24837244A3}.Release|x64.Build.0 = Release|x64
+		{88DDEB64-80C5-48E6-B671-A1E691B2A829}.Debug|x64.ActiveCfg = Debug|x64
+		{88DDEB64-80C5-48E6-B671-A1E691B2A829}.Debug|x64.Build.0 = Debug|x64
+		{88DDEB64-80C5-48E6-B671-A1E691B2A829}.Release|x64.ActiveCfg = Release|x64
+		{88DDEB64-80C5-48E6-B671-A1E691B2A829}.Release|x64.Build.0 = Release|x64
+		{E5A04578-F618-4B61-928E-3D05996B62D7}.Debug|x64.ActiveCfg = Debug|x64
+		{E5A04578-F618-4B61-928E-3D05996B62D7}.Debug|x64.Build.0 = Debug|x64
+		{E5A04578-F618-4B61-928E-3D05996B62D7}.Release|x64.ActiveCfg = Release|x64
+		{E5A04578-F618-4B61-928E-3D05996B62D7}.Release|x64.Build.0 = Release|x64
+		{67E3CE5F-7283-4BCF-B896-3679CEAFD5EB}.Debug|x64.ActiveCfg = Debug|x64
+		{67E3CE5F-7283-4BCF-B896-3679CEAFD5EB}.Debug|x64.Build.0 = Debug|x64
+		{67E3CE5F-7283-4BCF-B896-3679CEAFD5EB}.Release|x64.ActiveCfg = Release|x64
+		{67E3CE5F-7283-4BCF-B896-3679CEAFD5EB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = msvc2015_513
+		Qt5Version = msvc2017_64
+		SolutionGuid = {F4F8789C-801F-4E2B-87F2-E204B94478C4}
 	EndGlobalSection
 EndGlobal

@@ -1,29 +1,163 @@
-<UI version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QMyClientClass</class>
- <widget class="QMainWindow" name="QMyClientClass" >
-  <property name="objectName" >
-   <string notr="true">QMyClientClass</string>
-  </property>
-  <property name="geometry" >
+ <widget class="QMainWindow" name="QMyClientClass">
+  <property name="geometry">
    <rect>
-	<x>0</x>
-	<y>0</y>
-	<width>600</width>
-	<height>400</height>
+    <x>0</x>
+    <y>0</y>
+    <width>746</width>
+    <height>512</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>QMyClient</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QCameraShowDlg" name="m_pCameraShow1" native="true"/>
+    </item>
+    <item>
+     <widget class="QCameraShowDlg" name="m_pCameraShow2" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="m_pMenuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>746</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="m_pFileMenu">
+    <property name="title">
+     <string>文件(&amp;F)</string>
+    </property>
+    <addaction name="m_pactNew"/>
+   </widget>
+   <widget class="QMenu" name="m_pSettingMenu">
+    <property name="title">
+     <string>设置(&amp;S)</string>
+    </property>
+    <addaction name="m_pactCameraSetting"/>
+    <addaction name="m_pactTakePhoto"/>
+    <addaction name="m_pactDynamicImage"/>
+   </widget>
+   <addaction name="m_pFileMenu"/>
+   <addaction name="m_pSettingMenu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="m_pactCameraSetting">
+   <property name="text">
+    <string>相机设置</string>
+   </property>
+   <property name="autoRepeat">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="m_pactNew">
+   <property name="text">
+    <string>新建(&amp;N)</string>
+   </property>
+  </action>
+  <action name="m_pactTakePhoto">
+   <property name="text">
+    <string>拍照</string>
+   </property>
+  </action>
+  <action name="m_pactDynamicImage">
+   <property name="text">
+    <string>动态图像</string>
+   </property>
+  </action>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCameraShowDlg</class>
+   <extends>QWidget</extends>
+   <header location="global">..\..\..\..\QCameraLib\QCameraShowDlg.h</header>
+   <container>1</container>
+   <slots>
+    <slot>slot_requestTakeAPhoto()</slot>
+    <slot>slot_requestShowDynamicImage()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources>
-   <include location="QMyClient.qrc"/>
+  <include location="QMyClient.qrc"/>
  </resources>
- <connections/>
-</UI>
+ <connections>
+  <connection>
+   <sender>m_pactCameraSetting</sender>
+   <signal>triggered()</signal>
+   <receiver>QMyClientClass</receiver>
+   <slot>slot_showCameraSettingDlg()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pactNew</sender>
+   <signal>triggered()</signal>
+   <receiver>QMyClientClass</receiver>
+   <slot>slot_newDocument()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pactTakePhoto</sender>
+   <signal>triggered()</signal>
+   <receiver>m_pCameraShow1</receiver>
+   <slot>slot_requestTakeAPhoto()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>189</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pactDynamicImage</sender>
+   <signal>triggered()</signal>
+   <receiver>m_pCameraShow1</receiver>
+   <slot>slot_requestShowDynamicImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>189</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slot_showCameraSettingDlg()</slot>
+  <slot>slot_newDocument()</slot>
+ </slots>
+</ui>

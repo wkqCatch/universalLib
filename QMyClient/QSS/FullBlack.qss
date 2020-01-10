@@ -52,6 +52,12 @@ QWidget::item:selected:enabled
     background-color: #3daee9;
 }
 
+QDialog
+{
+	border:2px solid rgb(96,96,96);
+	border-radius:6px;
+}
+
 QCheckBox
 {
     spacing: 5px;
@@ -1159,18 +1165,22 @@ QPushButton::menu-indicator  {
 
 QTableView QTableCornerButton::section
 {
-    background: transparent;
-    border: 0px outset red;
+	margin: 0px 0px 0px 0px;
+    border-top: 0px outset #76797C;
+	border-right: 0px outset #76797C;
+	border-bottom: 1px outset #76797C;
+	border-left: 0px outset #76797C;
+	font: bold 16px;
+	padding: 9px 0px 0px 10px;
 }
 
 QTableView
 {
     border: 1px solid #76797C; 
-    /*gridline-color: #31363b; */
 	gridline-color: #31363b; 
     background-color: #232629;
 	padding-top: 0px;
-	font-size:16px;
+	font-size:18px;
 	font-weight:bold;
 	font-family:Arial;
 	padding:0px;

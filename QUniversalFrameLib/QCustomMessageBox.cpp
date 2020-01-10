@@ -14,6 +14,7 @@ QCustomMessageBox::QCustomMessageBox(QWidget *parent, QString strBoxContentIcon,
 	m_pCustomDlgTitleBar = new QCustomDialogTitleBar(this, m_pFrameMessageBoxTitleBar, 20);
 	m_pCustomDlgTitleBar->setTitleIcon(":/MessageBoxRc/DlgIcon");
 	m_pCustomDlgTitleBar->hideMaximize(true);
+	m_pCustomDlgTitleBar->hideMinimize(true);
 
 	m_plbContentIcon->setPixmap(QPixmap(strBoxContentIcon).scaled(36, 36));
 	QFont contentTextFont = m_plbContentText->font();
@@ -39,30 +40,37 @@ QCustomMessageBox::~QCustomMessageBox()
 QDialog::DialogCode QCustomMessageBox::customMessageBox(QWidget * pParent, messageBoxType boxType, QString strContentText)
 {
 	QString strContentIconPath;
+	QString strTitleName;
 	switch (boxType)
 	{
 		case QCustomMessageBox::question:
 			strContentIconPath = ":/MessageBoxRc/questionIcon";
+			strTitleName = QStringLiteral("问题");
 			break;
 
 		case QCustomMessageBox::information:
 			strContentIconPath = ":/MessageBoxRc/informationIcon";
+			strTitleName = QStringLiteral("提示");
 			break;
 
 		case QCustomMessageBox::success:
 			strContentIconPath = ":/MessageBoxRc/successIcon";
+			strTitleName = QStringLiteral("成功");
 			break;
 
 		case QCustomMessageBox::successOnTimer:
 			strContentIconPath = ":/MessageBoxRc/successIcon";
+			strTitleName = QStringLiteral("成功");
 			break;
 
 		case QCustomMessageBox::warning:
 			strContentIconPath = ":/MessageBoxRc/warningIcon";
+			strTitleName = QStringLiteral("警告");
 			break;
 
 		case QCustomMessageBox::error:
 			strContentIconPath = ":/MessageBoxRc/errorIcon";
+			strTitleName = QStringLiteral("错误");
 			break;
 
 		default:
@@ -70,6 +78,7 @@ QDialog::DialogCode QCustomMessageBox::customMessageBox(QWidget * pParent, messa
 	}
 
 	QCustomMessageBox messageBox(pParent, strContentIconPath, strContentText);
+	messageBox.getCustomDialogTitleBar()->setTitleName(strTitleName);
 
 	return static_cast<QDialog::DialogCode>(messageBox.exec());
 }
@@ -93,4 +102,9 @@ void QCustomMessageBox::translateUI()
 		ppbCancelButton->setAutoDefault(true);
 		ppbCancelButton->setDefault(false);
 	}
+}
+
+QCustomDialogTitleBar * QCustomMessageBox::getCustomDialogTitleBar() const
+{
+	return m_pCustomDlgTitleBar;
 }

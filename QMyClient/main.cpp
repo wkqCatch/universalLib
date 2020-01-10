@@ -2,6 +2,7 @@
 #include <QtWidgets/QApplication>
 
 #include <QFile>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,6 @@ int main(int argc, char *argv[])
 
 	QMyClient w;
 	w.showMaximized();
-
+	
 	return a.exec();
 }

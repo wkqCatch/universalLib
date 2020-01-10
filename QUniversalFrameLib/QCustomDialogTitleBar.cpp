@@ -30,9 +30,9 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 	pTitleBar->setAttribute(Qt::WA_TranslucentBackground, true);
 	pTitleBar->installEventFilter(this);
 
-	QString dlgObjectName = pParent->objectName();
-	QString dlgStyleSheet = dlgObjectName + "{border:2px solid rgb(96,96,96); border-radius:6px;}";
-	pParent->setStyleSheet(dlgStyleSheet);
+// 	QString dlgObjectName = pParent->objectName();
+// 	QString dlgStyleSheet = dlgObjectName + "{border:2px solid rgb(96,96,96); border-radius:6px;}";
+// 	pParent->setStyleSheet(dlgStyleSheet);
 
 	pParent->setWindowFlag(Qt::FramelessWindowHint, true);
 
@@ -63,7 +63,10 @@ QCustomDialogTitleBar::QCustomDialogTitleBar(QDialog *pParent, QFrame *pTitleBar
 	m_ptbClose->setAutoRaise(true);
 	m_ptbClose->setToolTip(QStringLiteral("¹Ø±Õ"));
 	m_ptbClose->setIconSize(QSize(nHeight, nHeight));
-	m_ptbClose->setIcon(QIcon(":/MenuBarRc/Close"));
+	QIcon closeIcon;
+	closeIcon.addPixmap(QPixmap(":/MenuBarRc/close_disable"), QIcon::Disabled);
+	closeIcon.addPixmap(QPixmap(":/MenuBarRc/Close"), QIcon::Normal);
+	m_ptbClose->setIcon(closeIcon);
 
 	QHBoxLayout *pTitleBarLayout = new QHBoxLayout(pTitleBar);
 	pTitleBarLayout->setContentsMargins(2, 0, 0, 0);
@@ -130,6 +133,37 @@ void QCustomDialogTitleBar::hideMaximize(bool bMaximize)
 	{
 		m_ptbMaximize->hide();
 	}
+	else
+	{
+		m_ptbMaximize->show();
+	}
+}
+
+void QCustomDialogTitleBar::hideMinimize(bool bMinimize)
+{
+	if(bMinimize)
+	{
+		m_ptbMinimize->hide();
+	}
+	else
+	{
+		m_ptbMinimize->show();
+	}
+}
+
+void QCustomDialogTitleBar::enableMinimize(bool bEnable)
+{
+	m_ptbMinimize->setEnabled(bEnable);
+}
+
+void QCustomDialogTitleBar::enableMaximize(bool bEnable)
+{
+	m_ptbMaximize->setEnabled(bEnable);
+}
+
+void QCustomDialogTitleBar::enableClose(bool bEnable)
+{
+	m_ptbClose->setEnabled(bEnable);
 }
 
 bool QCustomDialogTitleBar::eventFilter(QObject * watched, QEvent * event)
