@@ -1,11 +1,15 @@
 #pragma once
 
 #include <QWidget>
+#include <QVector>
 
 #include "QKindOfRectF.h"
 #include "QRectFToolset.h"
 
-class QDrawFigurePanel : public QWidget
+#include "qcameralib_global.h"
+
+class QMenu;
+class QCAMERALIB_EXPORT QDrawFigurePanel : public QWidget
 {
 	Q_OBJECT
 
@@ -32,6 +36,14 @@ public:
 public slots:
 	void slot_updateImgRegion(int nOffsetX, int nOffsetY, int nWidth, int nHeight);
 	void slot_updateImgPos(int nX, int nY);
+	void slot_showPopMenu(const QPoint &pt);
+	void slot_clearAllMarkPoints();				//清除所有标记的像素点
+	void slot_enterGetPixelValueMode();			//进入获取像素值模式
+	void slot_receiveRequestedPixelValue(int nX, int nY, bool bColor, uchar ucChannal1, uchar ucChannel2, uchar ucChannel3);		//接收请求的像素值并刷新
+
+signals:
+	void sig_requestPixelValue(const QPoint& pt);
+	void sig_sendSelectedPixelPoint(int nX, int nY, uchar ucChannale1, uchar ucChannel2, uchar ucChannel3);
 
 protected:
 	void paintEvent(QPaintEvent *event) override;
@@ -41,6 +53,17 @@ protected:
 	void keyPressEvent(QKeyEvent *enent) override;
 
 private:
+	struct PixelValueInfo
+	{
+		int nX;
+		int nY;
+		bool bColor;
+		uchar ucChannel1;
+		uchar ucChannel2;
+		uchar ucChannel3;
+		QPoint pt;
+	};
+
 	QVector<QKindOfRectF>	m_vecAllKindsOfRectF;	//自定义矩形种类的合集
 
 	int			  m_nKindOfRectfInOperating;		//当前正在操作的矩形种类
@@ -61,4 +84,17 @@ private:
 	QPoint		  m_ptRelease;						//鼠标释放点位
 
 	QColor		  m_colorBackground;				//背景透明色
+
+	QMenu        *m_pCustomRightMenu;				//自定义右键菜单
+
+	QAction		 *m_pactShowPixelValue;				//显示像素值
+	QAction	     *m_pactClearAllMarkPoints;			//清除所有标记点位
+
+	bool		  m_bCancelMode;					//右键点击是为了取消模式，不是为了弹出菜单
+
+	bool		  m_bGetPixelValueMode;				//是否处于获取像素值模式
+
+	PixelValueInfo m_currentPixelValueInfo;			//当前像素值信息
+
+	QVector<PixelValueInfo> m_vecMarkPoints;		//各个标记点位
 };

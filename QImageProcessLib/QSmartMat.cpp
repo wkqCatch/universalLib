@@ -37,6 +37,13 @@ QSmartMat::QSmartMat(int nRows, int nCols, int nType, void * pData)
 
 }
 
+QSmartMat::QSmartMat(Size matSize, int nType, void * pData)
+	: m_matBase(matSize, nType, pData)
+	, m_matRoi()
+{
+
+}
+
 QSmartMat::~QSmartMat()
 {
 

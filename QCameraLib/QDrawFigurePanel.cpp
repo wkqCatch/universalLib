@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QMoveEvent>
+#include <QMenu>
 
 QDrawFigurePanel::QDrawFigurePanel(QWidget *parent)
 	: QWidget(parent)
@@ -16,14 +17,33 @@ QDrawFigurePanel::QDrawFigurePanel(QWidget *parent)
 	, m_bStartResizing(false)
 	, m_bRectfBeSelected(false)
 	, m_selectedAnchorPos(QCustomRectF::enotAnchor)
+	, m_pCustomRightMenu(nullptr)
+	, m_pactShowPixelValue(nullptr)
+	, m_pactClearAllMarkPoints(nullptr)
+	, m_bCancelMode(false)
+	, m_bGetPixelValueMode(false)
+	, m_currentPixelValueInfo{ 0, 0, false, 0, 0, 0, QPoint(0, 0) }
 {
 	m_colorBackground.setRgbF(0, 0, 0, 0.006);
 	m_vecAllKindsOfRectF.clear();
+
+	m_vecMarkPoints.clear();
 
 	setAttribute(Qt::WA_TranslucentBackground, true);
 	setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
 	setMouseTracking(false);
+
+	setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(this, &QDrawFigurePanel::customContextMenuRequested, this, &QDrawFigurePanel::slot_showPopMenu);
+
+	m_pCustomRightMenu = new QMenu(this);
+
+	m_pactShowPixelValue = m_pCustomRightMenu->addAction(QStringLiteral("获取像素值"));
+	connect(m_pactShowPixelValue, &QAction::triggered, this, &QDrawFigurePanel::slot_enterGetPixelValueMode);
+
+	m_pactClearAllMarkPoints = m_pCustomRightMenu->addAction(QStringLiteral("清除标记点"));
+	connect(m_pactClearAllMarkPoints, &QAction::triggered, this, &QDrawFigurePanel::slot_clearAllMarkPoints);
 }
 
 QDrawFigurePanel::~QDrawFigurePanel()
@@ -32,6 +52,11 @@ QDrawFigurePanel::~QDrawFigurePanel()
 
 void QDrawFigurePanel::enterDrawingMode(int nKindOfRectF)
 {
+	if (m_bGetPixelValueMode)
+	{
+		return;
+	}
+
 	if (nKindOfRectF > -1 && nKindOfRectF < m_vecAllKindsOfRectF.size())
 	{
 		m_bDrawingMode = true;
@@ -90,8 +115,8 @@ void QDrawFigurePanel::setDrawAllAnchor(bool bDrawAnchor)
 
 QCustomRectF QDrawFigurePanel::getSpecificRectF(int nKind, int nIndex)
 {
-	if(nKind < 0 || nKind > m_vecAllKindsOfRectF.size() - 1 || nIndex < 0 || 
-				nIndex > m_vecAllKindsOfRectF.at(nKind).getSizeOfRectf())
+	if (nKind < 0 || nKind > m_vecAllKindsOfRectF.size() - 1 || nIndex < 0 ||
+		nIndex > m_vecAllKindsOfRectF.at(nKind).getSizeOfRectf())
 	{
 		return QCustomRectF();
 	}
@@ -110,14 +135,93 @@ void QDrawFigurePanel::slot_updateImgPos(int nX, int nY)
 	move(nX, nY);
 }
 
+void QDrawFigurePanel::slot_showPopMenu(const QPoint & pt)
+{
+	if (m_bDrawingMode || m_bCancelMode)
+	{
+		m_bCancelMode = false;
+		return;
+	}
+
+	m_pCustomRightMenu->popup(QCursor::pos());
+}
+
+void QDrawFigurePanel::slot_clearAllMarkPoints()
+{
+	m_vecMarkPoints.clear();
+}
+
+void QDrawFigurePanel::slot_enterGetPixelValueMode()
+{
+	if (m_bDrawingMode)
+	{
+		return;
+	}
+
+	m_bGetPixelValueMode = true;
+	//setCursor(Qt::PointingHandCursor);
+	setMouseTracking(true);
+
+	m_ptCurrent = mapFromGlobal(QCursor::pos());
+	emit sig_requestPixelValue(m_ptCurrent);
+}
+
+void QDrawFigurePanel::slot_receiveRequestedPixelValue(int nX, int nY, bool bColor, uchar ucChannal1,
+	uchar ucChannel2, uchar ucChannel3)
+{
+	m_currentPixelValueInfo.nX = nX;
+	m_currentPixelValueInfo.nY = nY;
+	m_currentPixelValueInfo.bColor = bColor;
+	m_currentPixelValueInfo.ucChannel1 = ucChannal1;
+	m_currentPixelValueInfo.ucChannel2 = ucChannel2;
+	m_currentPixelValueInfo.ucChannel3 = ucChannel3;
+	m_currentPixelValueInfo.pt = m_ptCurrent;
+
+	update();
+}
+
 void QDrawFigurePanel::paintEvent(QPaintEvent * event)
 {
 	QPainter painter(this);
 	painter.fillRect(rect(), m_colorBackground);
 
-	for (int nCounter = 0; nCounter < m_vecAllKindsOfRectF.size(); ++nCounter)
+	for (int nRectCounter = 0; nRectCounter < m_vecAllKindsOfRectF.size(); ++nRectCounter)
 	{
-		m_vecAllKindsOfRectF[nCounter].paint(painter);
+		m_vecAllKindsOfRectF[nRectCounter].paint(painter);
+	}
+
+	if (m_bGetPixelValueMode)
+	{
+		if (m_currentPixelValueInfo.bColor)
+		{
+			painter.drawText(QRect(m_ptCurrent + QPoint(12, 0), QSize(180, 50)), Qt::AlignLeft,
+				QString("X:%1 Y:%2\nrgb:%3 %4 %5").arg(m_currentPixelValueInfo.nX).arg(m_currentPixelValueInfo.nY)
+				.arg(m_currentPixelValueInfo.ucChannel1).arg(m_currentPixelValueInfo.ucChannel2).arg(m_currentPixelValueInfo.ucChannel3));
+		}
+		else
+		{
+			painter.drawText(QRect(m_ptCurrent + QPoint(12, 0), QSize(180, 50)), Qt::AlignLeft,
+				QString("X:%1 Y:%2\ngray:%3").arg(m_currentPixelValueInfo.nX).arg(m_currentPixelValueInfo.nY)
+				.arg(m_currentPixelValueInfo.ucChannel1));
+		}
+	}
+
+	for(int nMarkCounter = 0; nMarkCounter < m_vecMarkPoints.size(); nMarkCounter++)
+	{
+		painter.drawEllipse(m_vecMarkPoints[nMarkCounter].pt, 1, 1);
+
+		if(m_vecMarkPoints[nMarkCounter].bColor)
+		{
+			painter.drawText(QRect(m_vecMarkPoints[nMarkCounter].pt + QPoint(12, 0), QSize(180, 50)), Qt::AlignLeft,
+				QString("X:%1 Y:%2\nrgb:%3 %4 %5").arg(m_vecMarkPoints[nMarkCounter].nX).arg(m_vecMarkPoints[nMarkCounter].nY)
+				.arg(m_vecMarkPoints[nMarkCounter].ucChannel1).arg(m_vecMarkPoints[nMarkCounter].ucChannel2).arg(m_vecMarkPoints[nMarkCounter].ucChannel3));
+		}
+		else
+		{
+			painter.drawText(QRect(m_vecMarkPoints[nMarkCounter].pt + QPoint(12, 0), QSize(180, 50)), Qt::AlignLeft,
+				QString("X:%1 Y:%2\ngray:%3").arg(m_vecMarkPoints[nMarkCounter].nX).arg(m_vecMarkPoints[nMarkCounter].nY)
+				.arg(m_vecMarkPoints[nMarkCounter].ucChannel1));
+		}
 	}
 }
 
@@ -150,12 +254,24 @@ void QDrawFigurePanel::mousePressEvent(QMouseEvent * event)
 			m_bDrawingMode = false;
 			m_bStartDrawing = false;
 			setCursor(Qt::ArrowCursor);
+			m_bCancelMode = true;
 		}
 	}
 	else
 	{
-		if(event->button() == Qt::LeftButton)
+		if (event->button() == Qt::LeftButton)
 		{
+			if (m_bGetPixelValueMode)
+			{
+				PixelValueInfo valueInfoTemp = m_currentPixelValueInfo;
+				m_vecMarkPoints << valueInfoTemp;
+
+				emit sig_sendSelectedPixelPoint(valueInfoTemp.nX, valueInfoTemp.nY,
+					valueInfoTemp.ucChannel1, valueInfoTemp.ucChannel2, valueInfoTemp.ucChannel3);
+
+				return;
+			}
+
 			for (int nCounter = 0; nCounter < m_vecAllKindsOfRectF.size(); nCounter++)
 			{
 				m_vecAllKindsOfRectF[nCounter].setSelected(false);
@@ -217,6 +333,18 @@ void QDrawFigurePanel::mousePressEvent(QMouseEvent * event)
 			m_nIndexOfRectfInOperating = 0;
 			update();
 		}
+		else if (event->button() == Qt::RightButton)
+		{
+			if (m_bGetPixelValueMode)
+			{
+				m_bGetPixelValueMode = false;
+				m_bCancelMode = true;
+
+				setMouseTracking(false);
+
+				update();
+			}
+		}
 	}
 }
 
@@ -258,10 +386,32 @@ void QDrawFigurePanel::mouseReleaseEvent(QMouseEvent * event)
 			}
 		}
 	}
+	else if (event->button() == Qt::RightButton)
+	{
+	}
 }
 
 void QDrawFigurePanel::mouseMoveEvent(QMouseEvent * event)
 {
+	m_ptCurrent = event->pos();
+
+	if (m_bGetPixelValueMode)
+	{
+		emit sig_requestPixelValue(m_ptCurrent);
+
+		if (m_ptCurrent.x() > rect().right() - 130)
+		{
+			m_ptCurrent.setX(rect().right() - 130);
+		}
+
+		if (m_ptCurrent.y() > rect().bottom() - 30)
+		{
+			m_ptCurrent.setY(rect().bottom() - 30);
+		}
+
+		return;
+	}
+
 	if (m_bRectfBeSelected)
 	{
 		for (int nCounter = 0; nCounter < m_vecAllKindsOfRectF.size(); nCounter++)
@@ -278,8 +428,6 @@ void QDrawFigurePanel::mouseMoveEvent(QMouseEvent * event)
 			setCursor(Qt::ClosedHandCursor);
 		}
 	}
-
-	m_ptCurrent = event->pos();
 
 	if (m_ptCurrent.x() < 0)
 	{
@@ -322,56 +470,56 @@ void QDrawFigurePanel::mouseMoveEvent(QMouseEvent * event)
 			{
 			case QCustomRectF::etopLeft:
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating, m_ptCurrent);
-				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomRight(m_nIndexOfRectfInOperating, 
-																					m_selectedRectfBackup.bottomRight());
+				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomRight(m_nIndexOfRectfInOperating,
+					m_selectedRectfBackup.bottomRight());
 				break;
 
 			case QCustomRectF::emidTop:
-				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating, 
-														m_selectedRectfBackup.x(), m_ptCurrent.y());
+				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating,
+					m_selectedRectfBackup.x(), m_ptCurrent.y());
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomRight(m_nIndexOfRectfInOperating,
-																					m_selectedRectfBackup.bottomRight());
+					m_selectedRectfBackup.bottomRight());
 				break;
 
 			case QCustomRectF::etopRight:
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopRight(m_nIndexOfRectfInOperating, m_ptCurrent);
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomLeft(m_nIndexOfRectfInOperating,
-																				   m_selectedRectfBackup.bottomLeft());
+					m_selectedRectfBackup.bottomLeft());
 				break;
 
 			case QCustomRectF::emidRight:
-				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating, 
-																				m_selectedRectfBackup.topLeft());
+				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating,
+					m_selectedRectfBackup.topLeft());
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomRight(m_nIndexOfRectfInOperating,
-																				    m_ptCurrent.x(), m_selectedRectfBackup.bottom());
+					m_ptCurrent.x(), m_selectedRectfBackup.bottom());
 				break;
 
 			case QCustomRectF::ebottomRight:
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating,
-																				m_selectedRectfBackup.topLeft());
+					m_selectedRectfBackup.topLeft());
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomRight(m_nIndexOfRectfInOperating,
-																					m_ptCurrent);
+					m_ptCurrent);
 				break;
 
 			case QCustomRectF::emidBottom:
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating,
-																				m_selectedRectfBackup.topLeft());
+					m_selectedRectfBackup.topLeft());
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomRight(m_nIndexOfRectfInOperating,
-																					m_selectedRectfBackup.right(), m_ptCurrent.y());
+					m_selectedRectfBackup.right(), m_ptCurrent.y());
 				break;
 
 			case QCustomRectF::ebottomLeft:
-				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopRight(m_nIndexOfRectfInOperating, 
-																				m_selectedRectfBackup.topRight());
+				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopRight(m_nIndexOfRectfInOperating,
+					m_selectedRectfBackup.topRight());
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomLeft(m_nIndexOfRectfInOperating,
-																				   m_ptCurrent);
+					m_ptCurrent);
 				break;
 
 			case QCustomRectF::emidLeft:
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfTopLeft(m_nIndexOfRectfInOperating,
-																		m_ptCurrent.x(), m_selectedRectfBackup.y());
+					m_ptCurrent.x(), m_selectedRectfBackup.y());
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].setRectfBottomRight(m_nIndexOfRectfInOperating,
-																				m_selectedRectfBackup.bottomRight());
+					m_selectedRectfBackup.bottomRight());
 				break;
 
 			case QCustomRectF::enotAnchor:
@@ -384,9 +532,9 @@ void QDrawFigurePanel::mouseMoveEvent(QMouseEvent * event)
 
 		case QDrawFigurePanel::byMove:
 			m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].translateRectF(m_nIndexOfRectfInOperating,
-														m_ptCurrent.x() - m_ptPress.x(), m_ptCurrent.y() - m_ptPress.y());
+				m_ptCurrent.x() - m_ptPress.x(), m_ptCurrent.y() - m_ptPress.y());
 
-			if(m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].getRectfLeft(m_nIndexOfRectfInOperating) < 0)
+			if (m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].getRectfLeft(m_nIndexOfRectfInOperating) < 0)
 			{
 				m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].moveRectfLeft(m_nIndexOfRectfInOperating, 0);
 			}
@@ -419,9 +567,9 @@ void QDrawFigurePanel::mouseMoveEvent(QMouseEvent * event)
 
 void QDrawFigurePanel::keyPressEvent(QKeyEvent * event)
 {
-	if(event->key() == Qt::Key_Delete)
+	if (event->key() == Qt::Key_Delete)
 	{
-		if(m_nKindOfRectfInOperating < 0 || m_nKindOfRectfInOperating > m_vecAllKindsOfRectF.size() - 1 ||
+		if (m_nKindOfRectfInOperating < 0 || m_nKindOfRectfInOperating > m_vecAllKindsOfRectF.size() - 1 ||
 			m_bStartDrawing || m_bStartResizing || !m_vecAllKindsOfRectF[m_nKindOfRectfInOperating].getIsSelectedFlag())
 		{
 			return;

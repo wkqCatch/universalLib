@@ -16,7 +16,9 @@ public:
 	QSmartMat(int nRows, int nCols, int nType);
 	QSmartMat(int nRows, int nCols, int nType, const Scalar& scalar);
 	QSmartMat(int nRows, int nCols, int nType, void *pData);
+	QSmartMat(Size matSize, int nType, void *pData);
 	~QSmartMat();
+
 
 	void updateMatBase(const Mat& matData);
 	Mat getMatBase() const;

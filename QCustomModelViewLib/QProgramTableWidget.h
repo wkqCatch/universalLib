@@ -11,7 +11,7 @@ class QCUSTOMMODELVIEWLIB_EXPORT QProgramTableWidget : public QCustomTableWidget
 public:
 	QProgramTableWidget(QWidget *parent);
 	QProgramTableWidget(QWidget *parent, int nRows, int nColumns);
-	~QProgramTableWidget();
+	virtual ~QProgramTableWidget();
 
 	void initializeCommandPair(const QStringList &listCommand, const QStringList &listParameter);  //≥ı ºªØ√¸¡Ó‘¥
 

@@ -45,6 +45,7 @@
     <addaction name="m_pactCameraSetting"/>
     <addaction name="m_pactTakePhoto"/>
     <addaction name="m_pactDynamicImage"/>
+    <addaction name="m_pactDealImg"/>
    </widget>
    <addaction name="m_pFileMenu"/>
    <addaction name="m_pSettingMenu"/>
@@ -71,6 +72,11 @@
   <action name="m_pactDynamicImage">
    <property name="text">
     <string>动态图像</string>
+   </property>
+  </action>
+  <action name="m_pactDealImg">
+   <property name="text">
+    <string>处理图像</string>
    </property>
   </action>
  </widget>
@@ -155,9 +161,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_pactDealImg</sender>
+   <signal>triggered()</signal>
+   <receiver>QMyClientClass</receiver>
+   <slot>slot_dealImg()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slot_showCameraSettingDlg()</slot>
   <slot>slot_newDocument()</slot>
+  <slot>slot_dealImg()</slot>
  </slots>
 </ui>
